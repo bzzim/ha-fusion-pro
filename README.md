@@ -59,6 +59,7 @@ docker run -d \
   --restart always \
   ghcr.io/bzzim/ha-fusion-pro
 ```
+
 </details>
 
 ## Query strings
