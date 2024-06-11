@@ -34,34 +34,39 @@ views:
           - name: Studio
             id: 9828119797472
             items:
-              - type: button
-                entity_id: light.studio_group
-                id: 3316142550855
-              - type: button
-                entity_id: switch.imac
-                id: 3575493192177
-              - type: button
-                entity_id: switch.gosund_monitors_switch
-                id: 8082348418851
-                icon: material-symbols:speaker
+              - id: 5925912370941
+                type: camera
+                entity_id: camera.xiaomi_cloud_map_extractor
       - type: horizontal-stack
         id: 4240433563768
         sections:
           - name: Media
             id: 7859955675791
             items:
-              - type: media
-                id: 5276106620601
-                conditional:
-                  - entity_id: sensor.plex_recently_added
-                    name: Senast tillagt
-                    icon: mdi:plex
-                    color: orange
-                  - entity_id: media_player.vardagsrum
-                  - entity_id: media_player.sovrum
-                  - entity_id: media_player.spotify
-                    icon: mdi:spotify
-                  - entity_id: media_player.kok
+              - type: button
+                id: 5560216674913
+                entity_id: person.matte
+                icon: fluent-emoji-flat:alien
+              - type: button
+                id: 3574383219011
+                entity_id: script.home_leave
+                icon: fluent:hand-wave-20-filled
+              - type: button
+                entity_id: switch.ps5_635_power
+                color: '#1cd760'
+                marquee: true
+                id: 8427787269294
+                name: Playstation
+              - type: button
+                entity_id: media_player.samsung
+                id: 1503994513807
+              - type: button
+                id: 8128083996424
+                entity_id: person.sanja
+              - type: button
+                id: 3827902926530
+                entity_id: script.home_arrive
+                icon: material-symbols:home-rounded
           - name: Övrigt
             items:
               - type: button
@@ -88,34 +93,7 @@ views:
                 marquee: true
                 id: 2763550457343
                 name: Klimat
-              - type: button
-                entity_id: switch.ps5_635_power
-                color: '#1cd760'
-                marquee: true
-                id: 8427787269294
-                name: Playstation
-              - type: button
-                entity_id: media_player.samsung
-                id: 1503994513807
             id: 7274165372538
-      - name: Hemma
-        items:
-          - type: button
-            id: 5560216674913
-            entity_id: person.matte
-            icon: fluent-emoji-flat:alien
-          - type: button
-            id: 8128083996424
-            entity_id: person.sanja
-          - type: button
-            id: 3574383219011
-            entity_id: script.home_leave
-            icon: fluent:hand-wave-20-filled
-          - type: button
-            id: 3827902926530
-            entity_id: script.home_arrive
-            icon: material-symbols:home-rounded
-        id: 1412018494330
   - name: Entities
     icon: material-symbols:filter-list-rounded
     id: 5813909951190
@@ -124,24 +102,23 @@ views:
         items:
           - type: button
             id: 3188058166584
-            entity_id: timer.test
-            name: Timer
+            entity_id: vacuum.viomi_v8_7c57_robot_cleaner
+            name: Пылесос с длинным нащванием
           - type: button
             id: 4014538054364
-            entity_id: update.hacs_update
-            name: Update
+            entity_id: humidifier.deerma_jsq5_30df_humidifier
+            name: ''
           - type: button
             id: 1542804203536
             entity_id: vacuum.morty
-            name: Vacuum
+            name: Пылесос с длинным название
           - type: button
             id: 6145994572695
             entity_id: weather.smhi_home
             name: Weather
           - type: button
             id: 1443718504784
-            entity_id: zone.home
-            name: Zone
+            entity_id: climate.unknown_midea_climate
           - type: button
             id: 8859082285036
             entity_id: sun.sun
@@ -155,8 +132,8 @@ views:
             name: Sensor
           - type: button
             id: 7404639096964
-            entity_id: select.conditional_media
-            name: Select
+            entity_id: climate.termostat
+            name: ''
           - type: button
             id: 8625756439435
             entity_id: script.home_arrive
@@ -171,8 +148,8 @@ views:
             name: Remote
           - type: button
             id: 4275494337776
-            entity_id: person.matte
-            name: Person
+            entity_id: camera.xiaomi_cloud_map_extractor
+            name: ''
           - type: button
             id: 6609447826960
             entity_id: number.galaxy_tab_a_screensaver_brightness
@@ -259,23 +236,23 @@ sidebar:
     extra_sensor_icon: mdi:drop
     icon_pack: meteocons
     id: 2790676343766
+  - type: navigate
+    id: 4055198699454
   - type: divider
     id: 6627143742873
   - type: sensor
     entity_id: sensor.template_laundry
     id: 2790676343722
   - type: sensor
-    entity_id: sensor.template_vacuum
-    id: 2790676343733
-  - type: sensor
     entity_id: sensor.template_mailbox
     id: 2790676343744
     date: false
   - type: sensor
+    entity_id: sensor.template_vacuum
+    id: 2790676343733
+  - type: sensor
     entity_id: sensor.template_battery
     id: 2790676343711
-  - type: navigate
-    id: 4055198699454
   - type: timer
     entity_id: timer.test
     id: 5786160817081
@@ -296,3 +273,7 @@ sidebar:
     period: day
     entity_id: sensor.memory_use_percent
     stroke: 2
+hidden_sidebar:
+  - desktop
+  - mobile
+hidden_navigate: []

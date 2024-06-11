@@ -2,58 +2,28 @@
 	import { states, lang, connection } from '$lib/Stores';
 	import Modal from '$lib/Modal/Index.svelte';
 	import WheelPicker from '$lib/Components/WheelPicker.svelte';
-	import Icon from '@iconify/svelte';
 	import ConfigButtons from '$lib/Modal/ConfigButtons.svelte';
 	import { getName, getSupport } from '$lib/Utils';
 	import { callService } from 'home-assistant-js-websocket';
-	import Select from '$lib/Components/Select.svelte';
+	import UniversalSelect from '$lib/Components/UniversalSelect.svelte';
 
 	export let isOpen: boolean;
 	export let sel: any;
 
-	// buttons or select, based on how many items
-	const MAX_ITEMS = 5;
+	const debug = false;
 
-	$: entity = $states[sel?.entity_id];
-	$: entity_id = entity?.entity_id;
-	$: attributes = entity?.attributes;
-	$: supported_features = attributes?.supported_features;
+	const presetModeIcons: Record<string, string> = {
+		none: 'mdi:power-off',
+		boost: 'mdi:rocket-launch',
+		eco: 'mdi:leaf',
+		sleep: 'mdi:bed',
+		energy: 'mdi:thunder-outline',
+		comfortable: 'mdi:temperature-approve',
+		dry: 'mdi:hair-dryer',
+		program: 'mdi:calculator-variant',
+		'freeze protection': 'mdi:snowflake-off'
+	};
 
-	$: supports = getSupport(supported_features, {
-		TARGET_TEMPERATURE: 1,
-		TARGET_TEMPERATURE_RANGE: 2,
-		TARGET_HUMIDITY: 4,
-		FAN_MODE: 8,
-		PRESET_MODE: 16,
-		SWING_MODE: 32,
-		AUX_HEAT: 64
-	});
-
-	/**
-	 * Handles click
-	 */
-	function handleClick(service: string, to_state: string) {
-		callService($connection, 'climate', 'set_' + service, {
-			entity_id,
-			[service]: to_state
-		});
-		// console.debug('climate.set_' + service, '->', to_state);
-	}
-
-	/**
-	 * Handles change
-	 */
-	function handleChange() {
-		callService($connection, 'climate', 'set_temperature', {
-			entity_id,
-			target_temp_low: attributes?.target_temp_low,
-			target_temp_high: attributes?.target_temp_high
-		});
-	}
-
-	/**
-	 * Options
-	 */
 	const hvacModesIcons: Record<string, string> = {
 		cool: 'mdi:snowflake',
 		dry: 'mdi:water-percent',
@@ -64,11 +34,13 @@
 		heat_cool: 'mdi:sun-snowflake-variant'
 	};
 
-	$: optionsHvacModes = attributes?.hvac_modes?.map((option: string) => ({
-		id: option,
-		label: $lang(option),
-		icon: hvacModesIcons?.[option] || 'mdi:fan'
-	}));
+	const swingModeIcons: Record<string, string> = {
+		on: 'mdi:arrow-oscillating',
+		off: 'mdi:arrow-oscillating-off',
+		vertical: 'mdi:arrow-up-down',
+		horizontal: 'mdi:arrow-left-right',
+		both: 'mdi:arrow-all'
+	};
 
 	const fanModeIcons: Record<string, string> = {
 		on: 'mdi:fan',
@@ -84,78 +56,77 @@
 		diffuse: 'mdi:weather-windy'
 	};
 
-	$: optionsFanModes = attributes?.fan_modes?.map((option: string) => ({
-		id: option,
-		label: $lang(option),
-		icon: fanModeIcons?.[option] || 'mdi:fan'
-	}));
+	$: entity = $states[sel?.entity_id];
+	$: entity_id = entity?.entity_id;
+	$: attributes = entity?.attributes;
+	$: supported_features = attributes?.supported_features;
+	$: currentTemperature = attributes?.current_temperature;
 
-	const swingModeIcons: Record<string, string> = {
-		on: 'mdi:arrow-oscillating',
-		off: 'mdi:arrow-oscillating-off',
-		vertical: 'mdi:arrow-up-down',
-		horizontal: 'mdi:arrow-left-right',
-		both: 'mdi:arrow-all'
-	};
+	$: supports = getSupport(supported_features, {
+		TARGET_TEMPERATURE: 1,
+		TARGET_TEMPERATURE_RANGE: 2,
+		TARGET_HUMIDITY: 4,
+		FAN_MODE: 8,
+		PRESET_MODE: 16,
+		SWING_MODE: 32,
+		AUX_HEAT: 64
+	});
 
-	$: optionsSwingModes = attributes?.swing_modes?.map((option: string) => ({
-		id: option,
-		label: $lang(option),
-		icon: swingModeIcons?.[option] || 'mdi:fan'
-	}));
+	$: optionsHvacModes =
+		attributes?.hvac_modes?.map((option: string) => ({
+			id: option,
+			label: $lang(option),
+			icon: hvacModesIcons?.[option] || 'mdi:fan'
+		})) ?? [];
 
-	const presetModeIcons: Record<string, string> = {
-		none: 'mdi:power-off',
-		boost: 'mdi:rocket-launch',
-		eco: 'mdi:leaf',
-		sleep: 'mdi:bed',
-		energy: 'mdi:thunder-outline',
-		comfortable: 'mdi:temperature-approve',
-		dry: 'mdi:hair-dryer',
-		program: 'mdi:calculator-variant',
-		'freeze protection': 'mdi:snowflake-off'
-	};
+	$: optionsFanModes =
+		attributes?.fan_modes?.map((option: string) => ({
+			id: option,
+			label: $lang(option),
+			icon: fanModeIcons?.[option] || 'mdi:fan'
+		})) ?? [];
 
-	$: optionsPresetModes = attributes?.preset_modes?.map((option: string) => ({
-		id: option,
-		label: $lang(option),
-		icon: presetModeIcons?.[option] || 'mdi:fan'
-	}));
+	$: optionsSwingModes =
+		attributes?.swing_modes?.map((option: string) => ({
+			id: option,
+			label: $lang(option),
+			icon: swingModeIcons?.[option] || 'mdi:fan'
+		})) ?? [];
+
+	$: optionsPresetModes =
+		attributes?.preset_modes?.map((option: string) => ({
+			id: option,
+			label: $lang(option),
+			icon: presetModeIcons?.[option] || 'mdi:fan'
+		})) ?? [];
+
+	// TODO: check is it possible to null
+	function handleClick(service: string, to_state?: string | undefined | null) {
+		if (to_state === undefined || to_state === null) {
+			return;
+		}
+		callService($connection, 'climate', 'set_' + service, {
+			entity_id,
+			[service]: to_state
+		});
+		if (debug) {
+			console.debug('climate.set_' + service, '->', to_state);
+		}
+	}
+
+	// TODO: check range. how pass temp?
+	function handleChange() {
+		callService($connection, 'climate', 'set_temperature', {
+			entity_id,
+			target_temp_low: attributes?.target_temp_low,
+			target_temp_high: attributes?.target_temp_high
+		});
+	}
 </script>
 
 {#if isOpen}
 	<Modal>
 		<h1 slot="title">{getName(sel, entity)}</h1>
-
-		{#if attributes?.hvac_modes}
-			<h2>{$lang('hvac_modes')}</h2>
-
-			{#if attributes?.hvac_modes?.length <= MAX_ITEMS}
-				<div class="button-container">
-					{#each attributes?.hvac_modes as hvacMode}
-						<button
-							title={$lang(hvacMode)}
-							on:click={() => handleClick('hvac_mode', hvacMode)}
-							class:selected={hvacMode === entity?.state}
-						>
-							<span class="icon">
-								<Icon icon={hvacModesIcons?.[hvacMode]} height="auto" />
-							</span>
-						</button>
-					{/each}
-				</div>
-			{:else if optionsHvacModes}
-				<Select
-					options={optionsHvacModes}
-					placeholder={$lang('hvac_modes')}
-					value={entity?.state}
-					on:change={(event) => {
-						if (event?.detail === null) return;
-						handleClick('hvac_mode', event?.detail);
-					}}
-				/>
-			{/if}
-		{/if}
 
 		{#if supports?.TARGET_TEMPERATURE}
 			<WheelPicker
@@ -165,7 +136,10 @@
 				}}
 			/>
 		{/if}
-
+		{#if currentTemperature}
+			<div class="current-temperature">{currentTemperature + '°'}</div>
+		{/if}
+		<!--		TODO: check range-->
 		{#if supports?.TARGET_TEMPERATURE_RANGE}
 			<h2>{$lang('target_temperature')}</h2>
 
@@ -200,108 +174,55 @@
 			</div>
 		{/if}
 
-		{#if attributes?.fan_modes}
+		{#if optionsHvacModes.length !== 0}
+			<h2>{$lang('hvac_modes')}</h2>
+			<UniversalSelect
+				items={optionsHvacModes}
+				selected={entity?.state}
+				on:change={(e) => handleClick('hvac_mode', e?.detail)}
+			/>
+		{/if}
+
+		{#if optionsFanModes.length !== 0}
 			<h2>{$lang('fan_modes')}</h2>
-			{#if attributes?.fan_modes?.length <= MAX_ITEMS}
-				<div class="button-container">
-					{#each attributes?.fan_modes as fanMode}
-						<button
-							on:click={() => handleClick('fan_mode', fanMode)}
-							class:selected={attributes?.fan_mode === fanMode}
-						>
-							<span class="icon">
-								<Icon icon={fanModeIcons?.[fanMode.toLowerCase()]} height="auto" />
-							</span>
-						</button>
-					{/each}
-				</div>
-			{:else if optionsFanModes}
-				<Select
-					options={optionsFanModes}
-					placeholder={$lang('fan_modes')}
-					value={attributes?.fan_mode}
-					on:change={(event) => {
-						if (event?.detail === null) return;
-						handleClick('fan_mode', event?.detail);
-					}}
-				/>
-			{/if}
+			<UniversalSelect
+				items={optionsFanModes}
+				selected={attributes?.fan_mode}
+				on:change={(e) => handleClick('fan_mode', e?.detail)}
+			/>
 		{/if}
 
-		{#if attributes?.swing_modes}
+		{#if optionsSwingModes.length !== 0}
 			<h2>{$lang('swing_modes')}</h2>
-			{#if attributes?.swing_modes?.length <= MAX_ITEMS}
-				<div class="button-container">
-					{#each attributes?.swing_modes as swingMode}
-						<button
-							on:click={() => handleClick('swing_mode', swingMode)}
-							class:selected={attributes?.swing_mode === swingMode}
-						>
-							<span class="icon">
-								<Icon icon={swingModeIcons?.[swingMode.toLowerCase()]} height="auto" />
-							</span>
-						</button>
-					{/each}
-				</div>
-			{:else if optionsSwingModes}
-				<Select
-					options={optionsSwingModes}
-					placeholder={$lang('swing_modes')}
-					value={attributes?.swing_mode}
-					on:change={(event) => {
-						if (event?.detail === null) return;
-						handleClick('swing_mode', event?.detail);
-					}}
-				/>
-			{/if}
+			<UniversalSelect
+				items={optionsSwingModes}
+				selected={attributes?.swing_mode}
+				on:change={(e) => handleClick('swing_mode', e?.detail)}
+			/>
 		{/if}
 
-		{#if attributes?.preset_modes}
+		{#if optionsPresetModes.length !== 0}
 			<h2>{$lang('preset_modes')}</h2>
-			{#if attributes?.preset_modes?.length <= MAX_ITEMS}
-				<div class="button-container">
-					{#each attributes?.preset_modes as presetMode}
-						<button
-							on:click={() => handleClick('preset_mode', presetMode)}
-							class:selected={attributes?.preset_mode === presetMode}
-						>
-							<span class="icon">
-								<Icon icon={presetModeIcons?.[presetMode.toLowerCase()]} height="auto" />
-							</span>
-						</button>
-					{/each}
-				</div>
-			{:else if optionsPresetModes}
-				<Select
-					options={optionsPresetModes}
-					placeholder={$lang('preset_modes')}
-					value={attributes?.preset_mode}
-					on:change={(event) => {
-						if (event?.detail === null) return;
-						handleClick('preset_mode', event?.detail);
-					}}
-				/>
-			{/if}
+			<UniversalSelect
+				items={optionsPresetModes}
+				selected={attributes?.preset_mode}
+				on:change={(e) => handleClick('preset_mode', e?.detail)}
+			/>
 		{/if}
 
 		<ConfigButtons />
+		{#if debug}
+			<h2>Debug</h2>
+			<pre><code>{JSON.stringify(entity, null, 2)}</code></pre>
+			<h2>Supports</h2>
+			{#each Object.entries(supports) as [feature, supported]}
+				<div>{feature}: {supported}</div>
+			{/each}
+		{/if}
 	</Modal>
 {/if}
 
 <style>
-	button {
-		padding-left: 0 !important;
-		padding-right: 0 !important;
-	}
-	.icon {
-		height: 1.25rem;
-		width: 1.25rem;
-		margin-right: 0.25rem;
-		vertical-align: middle;
-		display: inline-block;
-		color: inherit;
-	}
-
 	.slider-row {
 		display: flex;
 		align-items: center;
@@ -319,5 +240,9 @@
 	.slider-title {
 		margin-top: 0.3rem;
 		margin-bottom: 0.3rem;
+	}
+	.current-temperature {
+		text-align: center;
+		font-size: 1.2rem;
 	}
 </style>

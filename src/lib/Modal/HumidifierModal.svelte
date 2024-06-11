@@ -1,33 +1,42 @@
 <script lang="ts">
 	import { states, lang, connection, selectedLanguage } from '$lib/Stores';
 	import Modal from '$lib/Modal/Index.svelte';
-	import StateLogic from '$lib/Components/StateLogic.svelte';
 	import ConfigButtons from '$lib/Modal/ConfigButtons.svelte';
 	import { getName } from '$lib/Utils';
 	import { callService } from 'home-assistant-js-websocket';
 	import RangeSlider from '$lib/Components/RangeSlider.svelte';
-	import Select from '$lib/Components/Select.svelte';
-	import Toggle from '$lib/Components/Toggle.svelte';
-	import Icon from '@iconify/svelte';
+	import UniversalSelect from '$lib/Components/UniversalSelect.svelte';
 
 	export let isOpen: boolean;
 	export let sel: any;
 
-	// buttons or select, based on how many items
-	const MAX_ITEMS = 5;
+	const debug = false;
 
 	$: entity = $states?.[sel?.entity_id];
 	$: attr = entity?.attributes;
-	$: toggle = entity?.state === 'on';
 
-	$: options = attr?.available_modes?.map((option: string) => ({
-		id: option,
-		icon: icons?.[option.toLocaleLowerCase()] || 'mdi:water-percent',
-		label:
-			$lang(`humidifier_mode_${option}`) !== `humidifier_mode_${option}`
-				? $lang(`humidifier_mode_${option}`)
-				: option
-	}));
+	$: optionsToggle = [
+		{
+			id: 'off',
+			label: $lang('off'),
+			icon: 'mdi:power-off'
+		},
+		{
+			id: 'on',
+			label: $lang('on'),
+			icon: 'mdi:power-on'
+		}
+	];
+
+	$: optionsModes =
+		attr?.available_modes?.map((option: string) => ({
+			id: option,
+			icon: icons?.[option.toLocaleLowerCase()] || 'mdi:water-percent',
+			label:
+				$lang(`humidifier_mode_${option}`) !== `humidifier_mode_${option}`
+					? $lang(`humidifier_mode_${option}`)
+					: option
+		})) ?? [];
 
 	const icons: Record<string, string> = {
 		off: 'mdi:drop-off-outline',
@@ -81,19 +90,17 @@
 {#if isOpen}
 	<Modal>
 		<h1 slot="title">{getName(sel, entity)}</h1>
-
-		<!-- TOGGLE -->
-		<h2>{$lang('toggle')}</h2>
-
-		<Toggle bind:checked={toggle} on:change={() => handleEvent('toggle')} />
-
 		<!-- STATE -->
 		<h2>{$lang('state')}</h2>
+		<UniversalSelect
+			items={optionsToggle}
+			selected={entity?.state}
+			on:change={() => handleEvent('toggle')}
+		/>
 
+		<!--		TODO: check what the action?-->
 		{#if entity?.state === 'on' && attr?.action}
 			{$lang('humidifier_' + attr?.action)}
-		{:else}
-			<StateLogic entity_id={sel?.entity_id} selected={sel} />
 		{/if}
 
 		<!-- HUMIDITY -->
@@ -118,58 +125,21 @@
 			}}
 		/>
 
-		<!-- MODE  -->
-		<!-- attributes?.supported_features === 1 -->
-		{#if options}
+		{#if optionsModes}
 			<h2>
 				{$lang('mode')}
 			</h2>
-
-			{#if attr?.available_modes?.length <= MAX_ITEMS}
-				<div class="button-container">
-					{#each attr?.available_modes as mode}
-						<button
-							on:click={() => handleEvent('set_mode', mode)}
-							class:selected={attr?.mode === mode}
-						>
-							<span class="icon">
-								<Icon icon={icons?.[mode.toLowerCase()]} height="auto" />
-							</span>
-						</button>
-					{/each}
-				</div>
-			{:else if options}
-				<Select
-					{options}
-					clearable={false}
-					placeholder={$lang('mode')}
-					value={attr?.mode}
-					on:change={(event) => {
-						handleEvent('set_mode', event?.detail);
-					}}
-				/>
-			{/if}
+			<UniversalSelect
+				items={optionsModes}
+				selected={attr?.mode}
+				on:change={(e) => handleEvent('set_mode', e.detail)}
+			/>
 		{/if}
 
-		<!-- <h2>Dev</h2>
-
-		<code>
-			<pre>
-{JSON.stringify(entity, null, 2)}
-			</pre>
-		</code> -->
-
 		<ConfigButtons />
+		{#if debug}
+			<h2>Debug</h2>
+			<pre><code>{JSON.stringify(entity, null, 2)}</code></pre>
+		{/if}
 	</Modal>
 {/if}
-
-<style>
-	.icon {
-		height: 1.25rem;
-		width: 1.25rem;
-		margin-right: 0.25rem;
-		vertical-align: middle;
-		display: inline-block;
-		color: inherit;
-	}
-</style>

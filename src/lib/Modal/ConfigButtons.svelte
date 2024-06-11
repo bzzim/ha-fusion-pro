@@ -91,40 +91,44 @@
 	}
 </script>
 
-<div class="container">
-	<div class="align-left">
-		{#if $editMode && (sel?.type || sel?.sections)}
-			<button
-				transition:fade={{ duration: $motion }}
-				class="remove action"
-				on:click={removeObj}
-				use:Ripple={{
-					...$ripple,
-					color: 'rgba(0, 0, 0, 0.35)'
-				}}
-			>
-				{$lang('remove')}
-			</button>
-
-			{#if !disableChangeType === true}
+{#if $editMode}
+	<div class="container">
+		<div class="align-left">
+			{#if sel?.type || sel?.sections}
 				<button
 					transition:fade={{ duration: $motion }}
-					class="options action"
-					on:click={() => {
-						handleChangeType();
+					class="remove action"
+					on:click={removeObj}
+					use:Ripple={{
+						...$ripple,
+						color: 'rgba(0, 0, 0, 0.35)'
 					}}
-					use:Ripple={$ripple}
 				>
-					{$lang('change_type')}
+					{$lang('remove')}
 				</button>
+
+				{#if !disableChangeType === true}
+					<button
+						transition:fade={{ duration: $motion }}
+						class="options action"
+						on:click={() => {
+							handleChangeType();
+						}}
+						use:Ripple={$ripple}
+					>
+						{$lang('change_type')}
+					</button>
+				{/if}
 			{/if}
+		</div>
+
+		{#if sel?.type || sel?.sections}
+			<button class="done action" on:click={closeModal} use:Ripple={$ripple}>
+				{$lang('done')}
+			</button>
 		{/if}
 	</div>
-
-	<button class="done action" on:click={closeModal} use:Ripple={$ripple}>
-		{$lang('done')}
-	</button>
-</div>
+{/if}
 
 <style>
 	.container {

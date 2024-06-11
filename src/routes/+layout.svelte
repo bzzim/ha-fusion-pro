@@ -8,7 +8,7 @@
 </script>
 
 <svelte:head>
-	<title>FUSION</title>
+	<title>FUSION pro</title>
 	<meta name="description" content="fusion" />
 	<meta charset="utf-8" />
 </svelte:head>

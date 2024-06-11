@@ -1,18 +1,16 @@
 <script lang="ts">
-	import { connection, lang, states, ripple } from '$lib/Stores';
+	import { connection, lang, states } from '$lib/Stores';
 	import Modal from '$lib/Modal/Index.svelte';
 	import ConfigButtons from '$lib/Modal/ConfigButtons.svelte';
 	import { getName, getSupport } from '$lib/Utils';
-	import Select from '$lib/Components/Select.svelte';
 	import { callService } from 'home-assistant-js-websocket';
-	import Ripple from 'svelte-ripple';
+	import UniversalSelect from '$lib/Components/UniversalSelect.svelte';
 	import Icon from '@iconify/svelte';
 
 	export let isOpen: boolean;
 	export let sel: any;
 
-	// buttons or select, based on how many items
-	const MAX_ITEMS = 5;
+	const debug = false;
 	const speedIcons: Record<string, string> = {
 		low: 'mdi:fan-minus',
 		silent: 'mdi:fan-minus',
@@ -24,50 +22,102 @@
 		high: 'mdi:fan-speed-3'
 	};
 
+	const supportedCommands: { [key: string]: any } = {
+		TURN_ON: {
+			id: 'turn_on',
+			label: $lang('on'),
+			state: 'on',
+			icon: 'mdi:power-on'
+		},
+		TURN_OFF: {
+			id: 'turn_off',
+			label: $lang('off'),
+			state: 'off',
+			icon: 'mdi:power-off'
+		},
+		START: {
+			id: 'start',
+			label: $lang('start'),
+			state: 'cleaning',
+			icon: 'ic:round-play-arrow'
+		},
+		PAUSE: {
+			id: 'pause',
+			label: $lang('pause'),
+			state: 'paused',
+			icon: 'ic:round-pause'
+		},
+		STOP: {
+			id: 'stop',
+			label: $lang('stop'),
+			state: 'idle',
+			icon: 'ic:round-stop'
+		},
+		LOCATE: {
+			id: 'locate',
+			label: $lang('locate'),
+			state: 'locate',
+			icon: 'mdi:search'
+		},
+		RETURN_HOME: {
+			id: 'return_to_base',
+			label: $lang('return_home'),
+			state: 'returning',
+			icon: 'ic:round-home'
+		}
+	};
+
 	$: entity = $states[sel?.entity_id];
 	$: state = entity?.state;
 	$: attributes = entity?.attributes;
-	$: supported_features = attributes?.supported_features;
+	$: supportedFeatures = attributes?.supported_features;
+	$: statusDescription =
+		attributes !== undefined &&
+		attributes['vacuum.status_desc'] &&
+		state !== attributes['vacuum.status_desc'];
 
-	$: supports = getSupport(supported_features, {
+	$: supports = getSupport(supportedFeatures, {
 		TURN_ON: 1,
 		TURN_OFF: 2,
+		START: 8192,
 		PAUSE: 4,
 		STOP: 8,
+		LOCATE: 512,
 		RETURN_HOME: 16,
 		FAN_SPEED: 32,
 		BATTERY: 64,
 		STATUS: 128,
 		SEND_COMMAND: 256,
-		LOCATE: 512,
 		CLEAN_SPOT: 1024,
 		MAP: 2048,
-		STATE: 4096,
-		START: 8192
+		STATE: 4096
 	});
 
-	$: options = attributes?.fan_speed_list?.map((option: string) => ({
-		id: option,
-		label: $lang(option?.toLowerCase()),
-		icon: speedIcons?.[option.toLowerCase()] || 'mdi:fan',
-	}));
+	$: optionsFanSpeeds =
+		attributes?.fan_speed_list?.map((option: string) => ({
+			id: option,
+			label: $lang(option?.toLowerCase()),
+			icon: speedIcons?.[option.toLowerCase()] || 'mdi:fan'
+		})) ?? [];
 
-	/**
-	 * Handle click
-	 */
-	function handleClick(service: string) {
+	$: selectedCommand = Object.entries(supportedCommands).find(
+		([, value]) => value.state === entity?.state
+	)?.[1];
+
+	$: commands = Object.entries(supports)
+		.filter(([option, support]) => support && supportedCommands[option] !== undefined)
+		.map(([option]) => supportedCommands[option]);
+
+	function handleCommand(service: string) {
 		callService($connection, 'vacuum', service, {
 			entity_id: entity?.entity_id
 		});
 	}
 
-	/**
-	 * Handle change 'set_fan_speed'
-	 */
-	function handleChange(fan_speed: string) {
+	function handleSpeed(speed: string) {
 		callService($connection, 'vacuum', 'set_fan_speed', {
 			entity_id: entity?.entity_id,
-			fan_speed
+			fan_speed: speed
 		});
 	}
 </script>
@@ -76,155 +126,68 @@
 	<Modal>
 		<h1 slot="title">{getName(sel, entity)}</h1>
 
-		<h2>{$lang('state')}</h2>
-
-		{#if entity}
-			{$lang(state)}
-			<br />
-
-			{#if supports?.BATTERY}
-				<h2>{$lang('battery')}</h2>
-				{attributes?.battery_level} %
-			{/if}
-		{/if}
-
-		{#if supports?.FAN_SPEED && options}
-			<h2>{$lang('fan_speed')}</h2>
-			{#if attributes?.fan_speed_list.length <= MAX_ITEMS}
-				<div class="button-container">
-					{#each attributes?.fan_speed_list as s}
-						<button
-							title={$lang(s)}
-							on:click={() => handleClick(s)}
-							class:selected={s === entity?.state}
-						>
-							<span class="icon">
-								<Icon icon={speedIcons?.[s.toLowerCase()] || 'mdi:fan'} height="auto" />
-							</span>
-						</button>
-					{/each}
-				</div>
-			{:else}
-			<Select
-				{options}
-				placeholder={$lang('options')}
-				value={attributes?.fan_speed}
-				on:change={(event) => handleChange(event?.detail)}
-			/>
-			{/if}
-		{/if}
-
-		{#if supports?.TURN_ON || supports?.TURN_OFF || supports?.START || supports?.PAUSE || supports?.STOP || supports?.LOCATE || supports?.RETURN_HOME}
-			<h2>{$lang('vacuum_commands')?.replace(':', '')}</h2>
-		{/if}
-
-		<div class="button-container">
-			{#if supports?.TURN_ON}
-				<button
-					title={$lang('on')}
-					class:selected={entity?.state === 'on'}
-					on:click={() => handleClick('turn_on')}
-					use:Ripple={$ripple}
-				>
-					<span class="icon" style="transform: scale(0.7);">
-						<Icon icon="mdi:power-on" height="none" />
-					</span>
-				</button>
-			{/if}
-
-			{#if supports?.TURN_OFF}
-				<button
-					title={$lang('off')}
-					class:selected={entity?.state === 'off'}
-					on:click={() => handleClick('turn_off')}
-					use:Ripple={$ripple}
-				>
-					<span class="icon" style="transform: scale(0.7);">
-						<Icon icon="mdi:power-off" height="none" />
-					</span>
-				</button>
-			{/if}
-
-			{#if supports?.START}
-				<button
-					title={$lang('start')}
-					class:selected={entity?.state === 'cleaning'}
-					on:click={() => handleClick('start')}
-					use:Ripple={$ripple}
-				>
-					<span class="icon">
-						<Icon icon="ic:round-play-arrow" height="none" />
-					</span>
-				</button>
-			{/if}
-
-			{#if supports?.PAUSE}
-				<button
-					title={$lang('pause')}
-					class:selected={entity?.state === 'paused'}
-					on:click={() => handleClick('pause')}
-					use:Ripple={$ripple}
-				>
-					<span class="icon">
-						<Icon icon="ic:round-pause" height="none" />
-					</span>
-				</button>
-			{/if}
-
-			{#if supports?.STOP}
-				<button
-					title={$lang('stop')}
-					class:selected={entity?.state === 'idle'}
-					on:click={() => handleClick('stop')}
-					use:Ripple={$ripple}
-				>
-					<span class="icon">
-						<Icon icon="ic:round-stop" height="none" />
-					</span>
-				</button>
-			{/if}
-
-			{#if supports?.LOCATE}
-				<button title={$lang('locate')} on:click={() => handleClick('locate')} use:Ripple={$ripple}>
-					<span class="icon" style="transform: scale(0.65);">
-						<Icon icon="fa:search" height="none" />
-					</span>
-				</button>
-			{/if}
-
-			{#if supports?.RETURN_HOME}
-				<button
-					title={$lang('return_home')}
-					class:selected={entity?.state === 'returning'}
-					on:click={() => handleClick('return_to_base')}
-					use:Ripple={$ripple}
-				>
-					<span class="icon" style="transform: scale(0.85);">
-						<Icon icon="ic:round-home" height="none" />
-					</span>
-				</button>
-			{/if}
+		<div class="state-container">
+			<div>
+				<h2>{$lang('state')}</h2>
+				{$lang(state)}
+				{#if statusDescription}
+					{statusDescription}
+				{/if}
+			</div>
+			<div>
+				{#if supports?.BATTERY}
+					<h2>{$lang('battery')}</h2>
+					<div class="battery">
+						{#if attributes?.battery_icon}
+							<Icon icon={attributes?.battery_icon} height="auto" />&nbsp;
+						{/if}
+						{attributes?.battery_level + '%'}
+					</div>
+				{/if}
+			</div>
 		</div>
 
-		<!-- <h2>Supports</h2>
+		{#if supports?.FAN_SPEED && optionsFanSpeeds}
+			<h2>{$lang('fan_speed')}</h2>
+			<UniversalSelect
+				items={optionsFanSpeeds}
+				selected={attributes?.fan_speed}
+				on:change={(e) => handleSpeed(e.detail)}
+			/>
+		{/if}
 
-		{#each Object.entries(supports) as [feature, supported]}
-			<div>{feature}: {supported}</div>
-		{/each} -->
+		{#if commands.length !== 0}
+			<!--			TODO: check current state if select as list -->
+			<h2>{$lang('vacuum_commands')?.replace(':', '')}</h2>
+			<UniversalSelect
+				items={commands}
+				selected={selectedCommand?.id}
+				on:change={(e) => handleCommand(e.detail)}
+			/>
+		{/if}
+
+		{#if debug}
+			<h2>Debug</h2>
+			<pre><code>{JSON.stringify(entity, null, 2)}</code></pre>
+			<h2>Supports</h2>
+			{#each Object.entries(supports) as [feature, supported]}
+				<div>{feature}: {supported}</div>
+			{/each}
+		{/if}
 
 		<ConfigButtons />
 	</Modal>
 {/if}
 
 <style>
-	.button-container > button {
+	.state-container {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+	.state-container .battery {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-	}
-
-	.icon {
-		width: 1.6rem;
-		height: 1.6rem;
 	}
 </style>
