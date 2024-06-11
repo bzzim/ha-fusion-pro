@@ -154,9 +154,9 @@
 				<ComputeIcon entity_id={value} {getIconString} on:iconString />
 			{/key}
 		{:else if options?.[selectedIndex]?.icon}
-			<Icon icon={String(options?.[selectedIndex]?.icon)} height="none" />
+			<Icon icon={String(options?.[selectedIndex]?.icon)} height="auto" />
 		{:else if !value && defaultIcon}
-			<Icon icon={defaultIcon} height="none" />
+			<Icon icon={defaultIcon} height="auto" />
 		{/if}
 	</div>
 
@@ -168,7 +168,7 @@
 			style:transition="transform {$motion / 1.5}ms ease"
 			transition:scale={{ duration: $motion }}
 		>
-			<Icon icon="octicon:chevron-down-12" height="none" />
+			<Icon icon="octicon:chevron-down-12" height="auto" />
 		</button>
 	{:else if value && clearable}
 		<button
@@ -178,7 +178,7 @@
 			}}
 			transition:scale={{ duration: $motion }}
 		>
-			<Icon icon="mingcute:close-fill" height="none" />
+			<Icon icon="mingcute:close-fill" height="auto" />
 		</button>
 	{/if}
 
@@ -246,7 +246,7 @@
 					{#if filter?.[index]?.icon || computeIcons}
 						<div class="item-icon">
 							{#if filter?.[index]?.icon}
-								<Icon icon={String(filter?.[index]?.icon)} height="none" />
+								<Icon icon={String(filter?.[index]?.icon)} height="auto" />
 							{:else if computeIcons}
 								<ComputeIcon entity_id={filter?.[index]?.id} />
 							{/if}

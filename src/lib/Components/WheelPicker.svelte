@@ -23,9 +23,9 @@
 	// temperatures
 	let temperatures: number[] = [];
 
-	const minTemp = stateObj?.attributes?.min_temp;
-	const maxTemp = stateObj?.attributes?.max_temp;
-	if (minTemp && maxTemp) {
+	const minTemp = stateObj?.attributes?.min_temp ?? undefined;
+	const maxTemp = stateObj?.attributes?.max_temp ?? undefined;
+	if (minTemp !== undefined && maxTemp !== undefined) {
 		for (let i = maxTemp; i >= minTemp; i--) {
 			temperatures.push(i);
 		}
@@ -184,7 +184,7 @@
 			opacity: min ? '0' : $ripple.opacity
 		}}
 	>
-		<Icon icon="mingcute:down-fill" height="none" />
+		<Icon icon="mingcute:down-fill" height="3rem" />
 	</button>
 
 	<div
@@ -218,7 +218,7 @@
 			opacity: max ? '0' : $ripple.opacity
 		}}
 	>
-		<Icon icon="mingcute:up-fill" height="none" />
+		<Icon icon="mingcute:up-fill" height="3rem" />
 	</button>
 </div>
 
@@ -237,7 +237,7 @@
 		scrollbar-width: none;
 		color: white;
 		background-color: rgba(0, 0, 0, 0.2);
-		text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+		text-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 		margin: 0.4rem;
 		border: var(--border-color-button);
 	}
@@ -255,12 +255,12 @@
 	}
 
 	button {
-		margin-top: 1rem;
 		width: 4rem;
 		height: 4rem;
-		font-size: 2rem;
 		border: none;
 		padding-top: 0.4rem;
+		padding-left: 0;
+		padding-right: 0;
 		color: white;
 		background: transparent;
 		margin: 0;
