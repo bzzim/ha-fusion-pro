@@ -11,6 +11,19 @@
 	export let isOpen: boolean;
 	export let sel: any;
 
+	// buttons or select, based on how many items
+	const MAX_ITEMS = 5;
+	const speedIcons: Record<string, string> = {
+		low: 'mdi:fan-minus',
+		silent: 'mdi:fan-minus',
+		default: 'mdi:fan-speed-1',
+		basic: 'mdi:fan-speed-1',
+		medium: 'mdi:fan-speed-2',
+		normal: 'mdi:fan-speed-2',
+		strong: 'mdi:fan-speed-3',
+		high: 'mdi:fan-speed-3'
+	};
+
 	$: entity = $states[sel?.entity_id];
 	$: state = entity?.state;
 	$: attributes = entity?.attributes;
@@ -35,7 +48,8 @@
 
 	$: options = attributes?.fan_speed_list?.map((option: string) => ({
 		id: option,
-		label: $lang(option?.toLowerCase())
+		label: $lang(option?.toLowerCase()),
+		icon: speedIcons?.[option.toLowerCase()] || 'mdi:fan',
 	}));
 
 	/**
@@ -76,13 +90,28 @@
 
 		{#if supports?.FAN_SPEED && options}
 			<h2>{$lang('fan_speed')}</h2>
-
+			{#if attributes?.fan_speed_list.length <= MAX_ITEMS}
+				<div class="button-container">
+					{#each attributes?.fan_speed_list as s}
+						<button
+							title={$lang(s)}
+							on:click={() => handleClick(s)}
+							class:selected={s === entity?.state}
+						>
+							<span class="icon">
+								<Icon icon={speedIcons?.[s.toLowerCase()] || 'mdi:fan'} height="auto" />
+							</span>
+						</button>
+					{/each}
+				</div>
+			{:else}
 			<Select
 				{options}
 				placeholder={$lang('options')}
 				value={attributes?.fan_speed}
 				on:change={(event) => handleChange(event?.detail)}
 			/>
+			{/if}
 		{/if}
 
 		{#if supports?.TURN_ON || supports?.TURN_OFF || supports?.START || supports?.PAUSE || supports?.STOP || supports?.LOCATE || supports?.RETURN_HOME}
@@ -97,9 +126,9 @@
 					on:click={() => handleClick('turn_on')}
 					use:Ripple={$ripple}
 				>
-					<div class="icon" style="transform: scale(0.7);">
+					<span class="icon" style="transform: scale(0.7);">
 						<Icon icon="mdi:power-on" height="none" />
-					</div>
+					</span>
 				</button>
 			{/if}
 
@@ -110,9 +139,9 @@
 					on:click={() => handleClick('turn_off')}
 					use:Ripple={$ripple}
 				>
-					<div class="icon" style="transform: scale(0.7);">
+					<span class="icon" style="transform: scale(0.7);">
 						<Icon icon="mdi:power-off" height="none" />
-					</div>
+					</span>
 				</button>
 			{/if}
 
@@ -123,9 +152,9 @@
 					on:click={() => handleClick('start')}
 					use:Ripple={$ripple}
 				>
-					<div class="icon">
+					<span class="icon">
 						<Icon icon="ic:round-play-arrow" height="none" />
-					</div>
+					</span>
 				</button>
 			{/if}
 
@@ -136,9 +165,9 @@
 					on:click={() => handleClick('pause')}
 					use:Ripple={$ripple}
 				>
-					<div class="icon">
+					<span class="icon">
 						<Icon icon="ic:round-pause" height="none" />
-					</div>
+					</span>
 				</button>
 			{/if}
 
@@ -149,17 +178,17 @@
 					on:click={() => handleClick('stop')}
 					use:Ripple={$ripple}
 				>
-					<div class="icon">
+					<span class="icon">
 						<Icon icon="ic:round-stop" height="none" />
-					</div>
+					</span>
 				</button>
 			{/if}
 
 			{#if supports?.LOCATE}
 				<button title={$lang('locate')} on:click={() => handleClick('locate')} use:Ripple={$ripple}>
-					<div class="icon" style="transform: scale(0.65);">
+					<span class="icon" style="transform: scale(0.65);">
 						<Icon icon="fa:search" height="none" />
-					</div>
+					</span>
 				</button>
 			{/if}
 
@@ -170,9 +199,9 @@
 					on:click={() => handleClick('return_to_base')}
 					use:Ripple={$ripple}
 				>
-					<div class="icon" style="transform: scale(0.85);">
+					<span class="icon" style="transform: scale(0.85);">
 						<Icon icon="ic:round-home" height="none" />
-					</div>
+					</span>
 				</button>
 			{/if}
 		</div>

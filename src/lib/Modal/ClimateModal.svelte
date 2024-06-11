@@ -109,6 +109,10 @@
 		boost: 'mdi:rocket-launch',
 		eco: 'mdi:leaf',
 		sleep: 'mdi:bed',
+		energy: 'mdi:thunder-outline',
+		comfortable: 'mdi:temperature-approve',
+		dry: 'mdi:hair-dryer',
+		program: 'mdi:calculator-variant',
 		'freeze protection': 'mdi:snowflake-off'
 	};
 
@@ -270,7 +274,7 @@
 			{:else if optionsPresetModes}
 				<Select
 					options={optionsPresetModes}
-					placeholder={$lang('preset_mode')}
+					placeholder={$lang('preset_modes')}
 					value={attributes?.preset_mode}
 					on:change={(event) => {
 						if (event?.detail === null) return;

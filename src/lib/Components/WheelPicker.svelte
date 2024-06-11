@@ -272,6 +272,6 @@
 		margin-top: 1.5rem;
 		display: flex;
 		align-items: center;
-		justify-content: space-evenly;
+		justify-content: center;
 	}
 </style>

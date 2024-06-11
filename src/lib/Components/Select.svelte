@@ -329,6 +329,7 @@
 		gap: 0.9rem;
 		font-size: 0.95rem;
 		height: 100%;
+		text-transform: capitalize;
 	}
 
 	.item-icon {
