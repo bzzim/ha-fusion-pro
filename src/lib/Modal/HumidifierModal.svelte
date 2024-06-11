@@ -8,9 +8,13 @@
 	import RangeSlider from '$lib/Components/RangeSlider.svelte';
 	import Select from '$lib/Components/Select.svelte';
 	import Toggle from '$lib/Components/Toggle.svelte';
+	import Icon from '@iconify/svelte';
 
 	export let isOpen: boolean;
 	export let sel: any;
+
+	// buttons or select, based on how many items
+	const MAX_ITEMS = 5;
 
 	$: entity = $states?.[sel?.entity_id];
 	$: attr = entity?.attributes;
@@ -18,11 +22,15 @@
 
 	$: options = attr?.available_modes?.map((option: string) => ({
 		id: option,
-		icon: icons?.[option] || 'mdi:water-percent',
-		label: $lang(`humidifier_mode_${option}`)
+		icon: icons?.[option.toLocaleLowerCase()] || 'mdi:water-percent',
+		label:
+			$lang(`humidifier_mode_${option}`) !== `humidifier_mode_${option}`
+				? $lang(`humidifier_mode_${option}`)
+				: option
 	}));
 
 	const icons: Record<string, string> = {
+		off: 'mdi:drop-off-outline',
 		auto: 'mdi:refresh-auto',
 		away: 'mdi:account-arrow-right',
 		baby: 'mdi:baby-carriage',
@@ -31,7 +39,11 @@
 		eco: 'mdi:leaf',
 		home: 'mdi:home',
 		normal: 'mdi:water-percent',
-		sleep: 'mdi:power-sleep'
+		sleep: 'mdi:power-sleep',
+		level1: 'mdi:fan-speed-1',
+		level2: 'mdi:fan-speed-2',
+		level3: 'mdi:fan-speed-3',
+		humidity: 'mdi:drop'
 	};
 
 	/**
@@ -113,14 +125,30 @@
 				{$lang('mode')}
 			</h2>
 
-			<Select
-				{options}
-				placeholder={$lang('mode')}
-				value={attr?.mode}
-				on:change={(event) => {
-					handleEvent('set_mode', event?.detail);
-				}}
-			/>
+			{#if attr?.available_modes?.length <= MAX_ITEMS}
+				<div class="button-container">
+					{#each attr?.available_modes as mode}
+						<button
+							on:click={() => handleEvent('set_mode', mode)}
+							class:selected={attr?.mode === mode}
+						>
+							<span class="icon">
+								<Icon icon={icons?.[mode.toLowerCase()]} height="auto" />
+							</span>
+						</button>
+					{/each}
+				</div>
+			{:else if options}
+				<Select
+					{options}
+					clearable={false}
+					placeholder={$lang('mode')}
+					value={attr?.mode}
+					on:change={(event) => {
+						handleEvent('set_mode', event?.detail);
+					}}
+				/>
+			{/if}
 		{/if}
 
 		<!-- <h2>Dev</h2>
@@ -134,3 +162,14 @@
 		<ConfigButtons />
 	</Modal>
 {/if}
+
+<style>
+	.icon {
+		height: 1.25rem;
+		width: 1.25rem;
+		margin-right: 0.25rem;
+		vertical-align: middle;
+		display: inline-block;
+		color: inherit;
+	}
+</style>

@@ -367,6 +367,7 @@ dir_keys = [
             ("fan_only", ["entity_component", "_", "state", "fan_only"]),
             ("fan_modes", ["entity_component", "_", "state_attributes", "fan_modes", "name"]),
             ("hvac_modes", ["entity_component", "_", "state_attributes", "hvac_modes", "name"]),
+            ("preset_modes", ["entity_component", "_", "state_attributes", "preset_modes", "name"]),
             ("target_temperature", ["entity_component", "_", "state_attributes", "temperature", "name"]),
             ("swing_modes", ["entity_component", "_", "state_attributes", "swing_modes", "name"]),
             ("low", ["entity_component", "_", "state_attributes", "fan_mode", "state", "low"]),
@@ -381,6 +382,9 @@ dir_keys = [
             ("both", ["entity_component", "_", "state_attributes", "swing_mode", "state", "both"]),
             ("horizontal", ["entity_component", "_", "state_attributes", "swing_mode", "state", "horizontal"]),
             ("vertical", ["entity_component", "_", "state_attributes", "swing_mode", "state", "vertical"]),
+            ("boost", ["entity_component", "_", "state_attributes", "preset_mode", "state", "boost"]),
+            ("eco", ["entity_component", "_", "state_attributes", "preset_mode", "state", "eco"]),
+            ("sleep", ["entity_component", "_", "state_attributes", "preset_mode", "state", "sleep"]),
         ],
     ),
     (  # DEVICE_TRACKER

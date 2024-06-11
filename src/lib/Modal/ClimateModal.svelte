@@ -12,7 +12,7 @@
 	export let sel: any;
 
 	// buttons or select, based on how many items
-	const MAX_ITEMS = 4;
+	const MAX_ITEMS = 5;
 
 	$: entity = $states[sel?.entity_id];
 	$: entity_id = entity?.entity_id;
@@ -74,9 +74,11 @@
 		on: 'mdi:fan',
 		off: 'mdi:fan-off',
 		auto: 'mdi:fan-auto',
+		silent: 'mdi:sleep',
 		low: 'mdi:speedometer-slow',
 		medium: 'mdi:speedometer-medium',
 		high: 'mdi:speedometer',
+		turbo: 'mdi:rocket-launch',
 		middle: 'mdi:speedometer-medium',
 		focus: 'mdi:target',
 		diffuse: 'mdi:weather-windy'
@@ -101,6 +103,20 @@
 		label: $lang(option),
 		icon: swingModeIcons?.[option] || 'mdi:fan'
 	}));
+
+	const presetModeIcons: Record<string, string> = {
+		none: 'mdi:power-off',
+		boost: 'mdi:rocket-launch',
+		eco: 'mdi:leaf',
+		sleep: 'mdi:bed',
+		'freeze protection': 'mdi:snowflake-off'
+	};
+
+	$: optionsPresetModes = attributes?.preset_modes?.map((option: string) => ({
+		id: option,
+		label: $lang(option),
+		icon: presetModeIcons?.[option] || 'mdi:fan'
+	}));
 </script>
 
 {#if isOpen}
@@ -118,9 +134,9 @@
 							on:click={() => handleClick('hvac_mode', hvacMode)}
 							class:selected={hvacMode === entity?.state}
 						>
-							<div class="icon">
-								<Icon icon={hvacModesIcons?.[hvacMode]} height="none" />
-							</div>
+							<span class="icon">
+								<Icon icon={hvacModesIcons?.[hvacMode]} height="auto" />
+							</span>
 						</button>
 					{/each}
 				</div>
@@ -189,7 +205,9 @@
 							on:click={() => handleClick('fan_mode', fanMode)}
 							class:selected={attributes?.fan_mode === fanMode}
 						>
-							{$lang(fanMode)}
+							<span class="icon">
+								<Icon icon={fanModeIcons?.[fanMode.toLowerCase()]} height="auto" />
+							</span>
 						</button>
 					{/each}
 				</div>
@@ -215,7 +233,9 @@
 							on:click={() => handleClick('swing_mode', swingMode)}
 							class:selected={attributes?.swing_mode === swingMode}
 						>
-							{$lang(swingMode)}
+							<span class="icon">
+								<Icon icon={swingModeIcons?.[swingMode.toLowerCase()]} height="auto" />
+							</span>
 						</button>
 					{/each}
 				</div>
@@ -232,11 +252,43 @@
 			{/if}
 		{/if}
 
+		{#if attributes?.preset_modes}
+			<h2>{$lang('preset_modes')}</h2>
+			{#if attributes?.preset_modes?.length <= MAX_ITEMS}
+				<div class="button-container">
+					{#each attributes?.preset_modes as presetMode}
+						<button
+							on:click={() => handleClick('preset_mode', presetMode)}
+							class:selected={attributes?.preset_mode === presetMode}
+						>
+							<span class="icon">
+								<Icon icon={presetModeIcons?.[presetMode.toLowerCase()]} height="auto" />
+							</span>
+						</button>
+					{/each}
+				</div>
+			{:else if optionsPresetModes}
+				<Select
+					options={optionsPresetModes}
+					placeholder={$lang('preset_mode')}
+					value={attributes?.preset_mode}
+					on:change={(event) => {
+						if (event?.detail === null) return;
+						handleClick('preset_mode', event?.detail);
+					}}
+				/>
+			{/if}
+		{/if}
+
 		<ConfigButtons />
 	</Modal>
 {/if}
 
 <style>
+	button {
+		padding-left: 0 !important;
+		padding-right: 0 !important;
+	}
 	.icon {
 		height: 1.25rem;
 		width: 1.25rem;
