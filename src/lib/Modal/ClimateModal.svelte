@@ -6,6 +6,7 @@
 	import { getName, getSupport } from '$lib/Utils';
 	import { callService } from 'home-assistant-js-websocket';
 	import UniversalSelect from '$lib/Components/UniversalSelect.svelte';
+	import SlidePicker from '$lib/Components/SlidePicker.svelte';
 
 	export let isOpen: boolean;
 	export let sel: any;
@@ -60,7 +61,6 @@
 	$: entity_id = entity?.entity_id;
 	$: attributes = entity?.attributes;
 	$: supported_features = attributes?.supported_features;
-	$: currentTemperature = attributes?.current_temperature;
 
 	$: supports = getSupport(supported_features, {
 		TARGET_TEMPERATURE: 1,
@@ -127,17 +127,17 @@
 {#if isOpen}
 	<Modal>
 		<h1 slot="title">{getName(sel, entity)}</h1>
-
 		{#if supports?.TARGET_TEMPERATURE}
-			<WheelPicker
-				stateObj={entity}
-				on:change={(event) => {
-					handleClick('temperature', event?.detail);
-				}}
-			/>
-		{/if}
-		{#if currentTemperature}
-			<div class="current-temperature">{currentTemperature + '°'}</div>
+			<div style="margin-bottom: 2rem; margin-top: 2rem;">
+				<SlidePicker
+					minValue={entity.attributes?.min_temp}
+					maxValue={entity.attributes?.max_temp}
+					defaultValue={entity.attributes?.temperature}
+					markValues={[entity.attributes?.current_temperature]}
+					postfix={'°'}
+					on:change={(e) => handleClick('temperature', e?.detail)}
+				/>
+			</div>
 		{/if}
 		<!--		TODO: check range-->
 		{#if supports?.TARGET_TEMPERATURE_RANGE}
@@ -240,9 +240,5 @@
 	.slider-title {
 		margin-top: 0.3rem;
 		margin-bottom: 0.3rem;
-	}
-	.current-temperature {
-		text-align: center;
-		font-size: 1.2rem;
 	}
 </style>

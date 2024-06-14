@@ -3,103 +3,116 @@
 	import { onMount, tick } from 'svelte';
 	import Ripple from 'svelte-ripple';
 	import Icon from '@iconify/svelte';
-	import type { HassEntity } from 'home-assistant-js-websocket';
 	import { createEventDispatcher } from 'svelte';
+	import Timer from '$lib/Sidebar/Timer.svelte';
 	const dispatch = createEventDispatcher();
 
-	export let stateObj: HassEntity;
+	export let minValue: number = 0;
+	export let maxValue: number;
+	export let defaultValue: number = 0;
+	export let revers: boolean = false;
+	export let postfix = '';
 
-	let container: HTMLDivElement;
-	let pointerDown = false;
+	let index: number;
+	let values: number[] = [];
 	let touch: boolean;
-
-	let timeout: ReturnType<typeof setTimeout> | undefined;
 	let touchScrolling = false;
-
+	let pointerDown = false;
+	let container: HTMLDivElement;
+	let isMounted = false;
+	let timeout: ReturnType<typeof setTimeout> | undefined;
 	let startY: number;
 	let scrollY: number;
-	let value: number;
 
-	// temperatures
-	let temperatures: number[] = [];
-
-	const minTemp = stateObj?.attributes?.min_temp ?? undefined;
-	const maxTemp = stateObj?.attributes?.max_temp ?? undefined;
-	if (minTemp !== undefined && maxTemp !== undefined) {
-		for (let i = maxTemp; i >= minTemp; i--) {
-			temperatures.push(i);
+	if (minValue != undefined && maxValue != undefined) {
+		if (revers) {
+			for (let i = maxValue; i >= minValue; i--) {
+				values.push(i);
+			}
+		} else {
+			for (let i = minValue; i <= maxValue; i++) {
+				values.push(i);
+			}
 		}
 	}
 
-	$: min = value === temperatures.length - 1;
-	$: max = value === 0;
+	$: start = index === values.length - 1;
+	$: end = index === 0;
+
+	$: onChange(defaultValue); // on change input property
+	function onChange(v: number) {
+		if (isMounted) {
+			let scrolledValue = Math.round(v);
+			const children = container.children[values.indexOf(scrolledValue)] as HTMLElement;
+			if (children) {
+				markCurrentValue(children);
+				scrollToCurrent(children, 'smooth');
+			}
+		}
+	}
 
 	$: if (mountFix()) {
-		dispatch('change', temperatures[value]);
+		dispatch('change', values[index]);
 	}
 
 	// don't set temperature on mount
 	// rewrite component later...
+	// TODO: check ??
 	function mountFix() {
-		if (isMounted === true) return true;
+		return isMounted === true;
 	}
 
-	let isMounted = false;
 	onMount(async () => {
 		touch = 'ontouchstart' in window;
-
-		// if temperature elements
 		if (container.children.length > 0) {
-			// round temperature to ignore decimals
-			let temperature = Math.round(stateObj?.attributes?.temperature);
-
-			// but don't round below or over minmax temp
-			if (minTemp && maxTemp) {
-				temperature = Math.max(minTemp, Math.min(maxTemp, temperature));
+			let rounded = Math.round(defaultValue);
+			if (minValue != undefined && maxValue != undefined) {
+				rounded = Math.max(minValue, Math.min(maxValue, rounded));
 			}
 
-			value = temperatures.indexOf(temperature);
+			index = values.indexOf(rounded);
 
 			// fallback
-			if (value === -1) value = 0;
+			if (index === -1) {
+				index = 0;
+			}
 
 			// set initial value
+			const children = container.children[index] as HTMLElement;
 			await tick();
-			container.scrollTo({
-				top: (container.children[value] as HTMLElement).offsetTop - container.offsetTop,
-				behavior: 'auto'
-			});
+			if (children) {
+				scrollToCurrent(children, 'auto');
+				markCurrentValue(getClosestChild());
+			}
 		}
 
 		isMounted = true;
 	});
 
-	/**
-	 * Scrolls the container to the next or previous
-	 * child based on the provided direction
-	 */
-	function handleClick(direction: 'increase' | 'decrease') {
-		let child: any;
-		let offset = direction === 'increase' ? 1 : -1;
-
-		if (
-			(direction === 'increase' && value < container.children.length - 1) ||
-			(direction === 'decrease' && value > 0)
-		) {
-			child = container.children[(value += offset)];
-		}
-
-		if (child) {
-			container.scrollTo({
-				top: child.offsetTop - container.offsetTop,
-				behavior: 'smooth'
-			});
+	function handleClick(direction: 'left' | 'right') {
+		let offset = direction === 'left' ? 1 : -1;
+		offset = revers ? -offset : offset;
+		let nextIndex = revers ? index - offset : index + offset;
+		if (nextIndex < container.children.length && nextIndex >= 0) {
+			index = nextIndex;
+			let child = container.children[nextIndex] as HTMLElement;
+			if (child) {
+				markCurrentValue(child);
+				container.scrollTo({
+					top: child.offsetTop - container.offsetTop,
+					behavior: 'smooth'
+				});
+			}
 		}
 	}
 
-	/**
-	 * Sets initial properties on mousedown event
-	 */
+	function scrollToCurrent(children: HTMLElement, behavior: 'auto' | 'smooth') {
+		container.scrollTo({
+			top: children.offsetTop - container.offsetTop,
+			behavior: behavior
+		});
+	}
+
 	function handleMouseDown(event: MouseEvent) {
 		if (!container.contains(event.target as Node)) return;
 		pointerDown = true;
@@ -107,28 +120,19 @@
 		scrollY = container.scrollTop;
 	}
 
-	/**
-	 * Scrolls to closest child on mouseup event
-	 */
 	function handleMouseUp() {
 		pointerDown = false;
 		const closestChild = getClosestChild() as HTMLDivElement | null;
-
 		if (closestChild) {
-			value = Array.from(container.children).indexOf(closestChild);
-			container.scrollTo({
-				top: closestChild.offsetTop - container.offsetTop,
-				behavior: 'smooth'
-			});
+			index = Array.from(container.children).indexOf(closestChild);
+			scrollToCurrent(closestChild, 'smooth');
 		}
 	}
 
-	/**
-	 * Updates the container's scroll position based
-	 * on the current and starting Y coordinates
-	 */
 	async function handleMouseMove(event: { pageY: number }) {
 		if (!pointerDown) return;
+
+		markCurrentValue(getClosestChild());
 
 		await tick();
 		const y = event.pageY - container.getBoundingClientRect().top;
@@ -136,10 +140,6 @@
 		container.scrollTop = scrollY - walk;
 	}
 
-	/**
-	 * Returns the child element that is closest
-	 * to the vertical middle of the container
-	 */
 	function getClosestChild() {
 		const containerMiddleY = container.getBoundingClientRect().top + container.clientHeight / 2;
 		return Array.from(container.children).reduce((closestChild: any, child) => {
@@ -152,17 +152,22 @@
 		}, null)?.child;
 	}
 
-	/**
-	 * Helper function for scrollend
-	 */
 	function handleTouchScroll() {
 		if (touchScrolling) {
+			markCurrentValue(getClosestChild());
 			clearTimeout(timeout);
 			timeout = setTimeout(() => {
 				handleMouseUp();
 				touchScrolling = false;
 			}, 100);
 		}
+	}
+
+	function markCurrentValue(children: HTMLElement) {
+		for (let i = 0; i < container.children.length; ++i) {
+			container.children[i].classList.remove('current');
+		}
+		children.classList.add('current');
 	}
 </script>
 
@@ -175,13 +180,13 @@
 
 <div class="wheel">
 	<button
-		on:click={() => handleClick('increase')}
-		style:cursor={min ? 'unset' : 'pointer'}
-		style:color={min ? 'rgba(255, 255, 255, 0.1)' : 'white'}
+		on:click={() => handleClick('left')}
+		style:cursor={start ? 'unset' : 'pointer'}
+		style:color={start ? 'rgba(255, 255, 255, 0.1)' : 'white'}
 		style:transition="color {$motion}ms ease"
 		use:Ripple={{
 			...$ripple,
-			opacity: min ? '0' : $ripple.opacity
+			opacity: start ? '0' : $ripple.opacity
 		}}
 	>
 		<Icon icon="mingcute:down-fill" height="3rem" />
@@ -195,27 +200,27 @@
 		style:cursor={pointerDown ? 'grabbing' : 'grab'}
 		style:scroll-snap-type={touch ? 'y mandatory' : 'unset'}
 	>
-		{#each temperatures as temperature, index}
+		{#each values as v, i}
 			<div
 				class="item"
 				data-exclude-drag-modal
-				style:margin-top={index === 0 ? '1rem' : 'none'}
-				style:margin-bottom={index === temperatures.length - 1 ? '1rem' : 'none'}
+				style:margin-top={i === 0 ? '1rem' : 'none'}
+				style:margin-bottom={i === values.length - 1 ? '1rem' : 'none'}
 				style:scroll-snap-align={touch ? 'center' : 'unset'}
 			>
-				{temperature}°
+				{v}{postfix}
 			</div>
 		{/each}
 	</div>
 
 	<button
-		on:click={() => handleClick('decrease')}
-		style:cursor={max ? 'unset' : 'pointer'}
-		style:color={max ? 'rgba(255, 255, 255, 0.1)' : 'white'}
+		on:click={() => handleClick('right')}
+		style:cursor={end ? 'unset' : 'pointer'}
+		style:color={end ? 'rgba(255, 255, 255, 0.1)' : 'white'}
 		style:transition="color {$motion}ms ease"
 		use:Ripple={{
 			...$ripple,
-			opacity: max ? '0' : $ripple.opacity
+			opacity: end ? '0' : $ripple.opacity
 		}}
 	>
 		<Icon icon="mingcute:up-fill" height="3rem" />
@@ -246,12 +251,18 @@
 		display: none;
 	}
 
+	:global(.current) {
+		color: white !important;
+	}
+
 	.item {
 		text-align: center;
 		line-height: var(--height);
 		font-size: 3rem;
 		width: var(--width);
-		height: 100%;
+		height: 3rem;
+		color: gray;
+		transition: all 0.2s ease-out;
 	}
 
 	button {
