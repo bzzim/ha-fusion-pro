@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { lang, states, connection, motion, ripple } from '$lib/Stores';
+	import { lang, states, connection, motion, ripple, isDebug } from '$lib/Stores';
 	import Modal from '$lib/Modal/Index.svelte';
 	import ConfigButtons from '$lib/Modal/ConfigButtons.svelte';
 	import { getName, getSupport } from '$lib/Utils';
@@ -182,7 +182,7 @@
 		<!-- ConfigButtons -->
 		<div class="add-config-buttons">
 			<div class="config-buttons-group">
-				{#if supports?.SPECIFIC_VERSION}
+				{#if supports?.SPECIFIC_VERSION && !latest}
 					<button
 						class="action"
 						class:done={skipped}
@@ -196,7 +196,7 @@
 					</button>
 				{/if}
 
-				{#if supports?.INSTALL}
+				{#if supports?.INSTALL && !latest}
 					<button
 						class="done action"
 						on:click={handleInstall}
@@ -211,6 +211,14 @@
 
 			<ConfigButtons {sel} />
 		</div>
+		{#if $isDebug}
+			<h2>Debug</h2>
+			<small>component: UpdateModal.svelte</small>
+			<h4>sel</h4>
+			<pre><code>{JSON.stringify(sel, null, 2)}</code></pre>
+			<h4>entity</h4>
+			<pre><code>{JSON.stringify(entity, null, 2)}</code></pre>
+		{/if}
 	</Modal>
 {/if}
 
@@ -227,6 +235,7 @@
 		display: flex;
 		justify-content: space-between;
 		width: 100%;
+		margin-top: 1rem;
 	}
 
 	.config-buttons-group {
@@ -241,7 +250,7 @@
 
 	.release-notes {
 		background-color: rgba(0, 0, 0, 0.2);
-		padding: 0.4rem 1.7rem 0.6rem 1.7rem;
+		padding: 0.1rem 1rem 0.1rem 1rem;
 		border-radius: 0.65rem;
 		margin-top: 1.4rem;
 		min-height: 8rem;

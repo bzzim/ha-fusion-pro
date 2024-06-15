@@ -1,37 +1,19 @@
 <script lang="ts">
-	import { motion, autocompleteOpen, ripple } from '$lib/Stores';
+	import { motion, ripple } from '$lib/Stores';
 	import { onMount, onDestroy } from 'svelte';
 	import { modals, closeModal } from 'svelte-modals';
 	import { fly, scale } from 'svelte/transition';
 	import { expoOut } from 'svelte/easing';
 	import Icon from '@iconify/svelte';
 	import Ripple from 'svelte-ripple';
-
-	import { trapFocus } from '$lib/Modal/trapFocus';
 	import '$lib/Modal/Modal.css';
 
 	export let backdropImage = true;
 	export let size: string | undefined = undefined;
 
 	let backdrop: HTMLDivElement | null;
-	let contents: HTMLDivElement | null;
 	let opacityValue = 1;
-	let draggingModal = false;
 	let top = 0;
-	let startTop = 0;
-	let threshold = window.innerHeight * 0.15;
-
-	$: if (draggingModal && contents) {
-		contents.style.backdropFilter = 'blur(2rem)';
-		(contents.style as any).webkitBackdropFilter = 'blur(2rem)';
-	} else {
-		setTimeout(() => {
-			if (contents && backdropImage) {
-				contents.style.backdropFilter = 'none';
-				(contents.style as any).webkitBackdropFilter = 'none';
-			}
-		}, $motion);
-	}
 
 	// delay count to prevent backdrop flickering on stacked modals
 	let delayedModalCount: number;
@@ -70,18 +52,19 @@
 	$: if (delayedModalCount === 1 && backdrop) debouncedOpacityChange();
 
 	onMount(() => {
-		if (document?.body) document.body.style.overflow = 'hidden';
-
+		if (document?.body) {
+			if (document?.body) document.body.style.overflow = 'hidden';
+		}
 		backdrop = document.querySelector('div.backdrop');
 		if (backdropImage) {
 			if (backdrop) {
-				backdrop.style.backgroundColor = 'black';
+				backdrop.style.backgroundColor = 'transparent';
 				backdrop.style.backgroundImage = 'var(--theme-background-image)';
 			}
 		} else {
 			if (backdrop) {
 				backdrop.style.backgroundImage = 'none';
-				backdrop.style.backgroundColor = 'rgba(0,0,0,0.3)';
+				backdrop.style.backgroundColor = 'rgba(0,0,0,0.7)';
 			}
 		}
 	});
@@ -91,74 +74,7 @@
 			document.body.style.overflow = 'unset';
 		}
 	});
-
-	function prevent(target: any) {
-		const selectors = [
-			'[data-exclude-drag-modal]',
-			'button',
-			'img',
-			'input',
-			'pre',
-			'[class^="cm-"]', // codemirror
-			'[slot="item"]', // select
-			'[class^="maplibregl-"]', // maplibre
-			'.IroHandle, .IroSliderGradient, .IroWheelBorder' // iro
-		];
-
-		// console.debug(target);
-
-		while (target) {
-			if (target.matches && selectors.some((selector) => target.matches(selector))) {
-				return true;
-			}
-			target = target.parentNode;
-		}
-		return false;
-	}
-
-	function handlePointerDown(event: { target: any }) {
-		if (prevent(event.target)) {
-			return;
-		}
-		draggingModal = true;
-		startTop = top;
-	}
-
-	function handlePointerMove(event: { movementY: number; buttons: number }) {
-		if (draggingModal && event.buttons !== 0) {
-			let newTop = top + event.movementY;
-			if (event.movementY < 0 && newTop < 0) {
-				newTop = 0;
-			}
-			top = newTop;
-		} else {
-			draggingModal = false;
-		}
-	}
-
-	function handlePointerUp() {
-		draggingModal = false;
-		if (top - startTop > threshold) {
-			if (backdrop) backdrop.style.transition = 'none';
-			closeModal();
-		} else {
-			if (backdrop) backdrop.style.transition = 'opacity 100ms ease-out';
-			top = 0;
-		}
-	}
-
-	function handleKeydown(event: any) {
-		if (event.key === 'Escape') {
-			if (!$autocompleteOpen) closeModal();
-		}
-	}
 </script>
-
-<svelte:window
-	on:pointerup={handlePointerUp}
-	on:pointermove={handlePointerMove}
-	on:keydown={handleKeydown}
-/>
 
 <div
 	role="dialog"
@@ -170,17 +86,10 @@
 	}}
 	out:scale|global={{ duration: $motion / 2, start: 0.85 }}
 >
-	<div
-		id="modal"
-		on:pointerdown={handlePointerDown}
-		style:transform="translateY({top}px)"
-		style:transition={!draggingModal ? `transform ${$motion}ms ease-out` : 'none'}
-		use:trapFocus
-	>
+	<div id="modal">
 		<div
 			style:width={size === 'large' ? '80vw' : '40rem'}
 			class="contents"
-			bind:this={contents}
 			class:warning={!backdropImage}
 		>
 			<div class="header">
@@ -196,7 +105,7 @@
 					style:outline="none"
 					use:Ripple={$ripple}
 				>
-					<Icon icon="mingcute:close-fill" height="none" />
+					<Icon icon="mingcute:close-fill" height="auto" />
 				</button>
 			</div>
 
@@ -207,8 +116,7 @@
 
 <style>
 	.header {
-		display: flex;
-		justify-content: space-between;
+		padding-right: 2rem;
 	}
 
 	.warning {
@@ -251,23 +159,55 @@
 		max-width: 85vw;
 		border-radius: 1.2rem;
 		position: relative;
-		box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+		box-shadow: rgba(0, 0, 0, 0.56) 0 22px 70px 4px;
 		outline: 1px solid rgba(255, 255, 255, 0.25);
 		overflow-y: auto;
 	}
 
 	button {
-		width: 1.85rem;
 		background: none;
 		color: inherit;
 		cursor: pointer;
-		margin: 0.06rem -0.25rem 0 0;
-		padding: 0;
+		width: 3rem;
 		border: none;
 		border-radius: 50%;
+		position: absolute !important;
+		right: 0;
+		top: 1rem;
 	}
 
 	button:focus {
 		color: inherit;
+	}
+
+	/*ref: https://gist.github.com/flekschas/a817fd1a67aaca511964*/
+	.contents::-webkit-scrollbar {
+		width: 1em; /* Total width including `border-width` of scrollbar thumb */
+		height: 0;
+	}
+	.contents::-webkit-scrollbar-thumb {
+		height: 0.3em;
+		border: 0.3em solid rgba(0, 0, 0, 0); /* Transparent border together with `background-clip: padding-box` does the trick */
+		background-clip: padding-box;
+		-webkit-border-radius: 1em;
+		background-color: rgba(0, 0, 0, 0.15);
+		-webkit-box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.025);
+	}
+	.contents::-webkit-scrollbar-button {
+		width: 0;
+		height: 0;
+		display: none;
+	}
+	.contents::-webkit-scrollbar-corner {
+		background-color: transparent;
+	}
+
+	@media all and (max-width: 768px) {
+		.contents {
+			width: 100% !important;
+			padding: 1rem;
+			max-height: 99%;
+			max-width: 99%;
+		}
 	}
 </style>

@@ -4,7 +4,6 @@
 	import { openModal } from 'svelte-modals';
 	import { onMount } from 'svelte';
 	import Icon from '@iconify/svelte';
-	import ConfigButtons from '$lib/Modal/ConfigButtons.svelte';
 	import Modal from '$lib/Modal/Index.svelte';
 	import Ripple from 'svelte-ripple';
 
@@ -187,8 +186,6 @@
 				{/if}
 			</div>
 		{/if}
-
-		<ConfigButtons />
 	</Modal>
 {/if}
 

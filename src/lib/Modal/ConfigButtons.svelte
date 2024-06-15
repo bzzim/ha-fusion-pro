@@ -95,18 +95,11 @@
 	<div class="container">
 		<div class="align-left">
 			{#if sel?.type || sel?.sections}
-				<button
-					transition:fade={{ duration: $motion }}
-					class="remove action"
-					on:click={removeObj}
-					use:Ripple={{
-						...$ripple,
-						color: 'rgba(0, 0, 0, 0.35)'
-					}}
-				>
-					{$lang('remove')}
-				</button>
-
+				{#if sel?.type || sel?.sections}
+					<button class="done action" on:click={closeModal} use:Ripple={$ripple}>
+						{$lang('done')}
+					</button>
+				{/if}
 				{#if !disableChangeType === true}
 					<button
 						transition:fade={{ duration: $motion }}
@@ -122,11 +115,17 @@
 			{/if}
 		</div>
 
-		{#if sel?.type || sel?.sections}
-			<button class="done action" on:click={closeModal} use:Ripple={$ripple}>
-				{$lang('done')}
-			</button>
-		{/if}
+		<button
+			transition:fade={{ duration: $motion }}
+			class="remove action"
+			on:click={removeObj}
+			use:Ripple={{
+				...$ripple,
+				color: 'rgba(0, 0, 0, 0.35)'
+			}}
+		>
+			{$lang('remove')}
+		</button>
 	</div>
 {/if}
 
@@ -135,10 +134,27 @@
 		display: flex;
 		justify-content: space-between;
 		margin-top: 2.37rem;
+		position: sticky;
+		bottom: 0;
+		background-color: var(--theme-modal-background-color-modal);
+		padding: 1rem;
+		border-radius: 1rem;
 	}
 
 	.align-left {
 		display: flex;
 		gap: 0.8rem;
+	}
+
+	@media all and (max-width: 480px) {
+		.align-left {
+			margin-bottom: 1rem;
+		}
+		.action {
+			width: 100% !important;
+		}
+		.container {
+			flex-direction: column;
+		}
 	}
 </style>

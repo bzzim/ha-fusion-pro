@@ -54,8 +54,6 @@
 	:global(body) {
 		background: black;
 		font-family: var(--theme-font-family);
-		user-select: none;
-		-webkit-user-select: none;
 		background-size: cover;
 		background-repeat: no-repeat;
 		background-attachment: fixed;

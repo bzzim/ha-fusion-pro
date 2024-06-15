@@ -265,10 +265,10 @@
 	}
 
 	.items {
-		border-radius: 0.6rem;
 		outline-offset: -2px;
 		display: grid;
 		grid-template-columns: repeat(auto-fill, 14.5rem);
+		/*grid-template-columns: repeat(auto-fill, 1fr);*/
 		grid-auto-rows: min-content;
 		gap: 0.4rem;
 		border-radius: 0.6rem;
@@ -294,6 +294,11 @@
 		.items {
 			display: flex;
 			flex-wrap: wrap;
+		}
+	}
+	@media all and (max-width: 380px) {
+		.horizontal-stack {
+			grid-auto-columns: auto;
 		}
 	}
 </style>

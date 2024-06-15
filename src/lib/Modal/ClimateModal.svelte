@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { states, lang, connection } from '$lib/Stores';
+	import { states, lang, connection, isDebug } from '$lib/Stores';
 	import Modal from '$lib/Modal/Index.svelte';
-	import WheelPicker from '$lib/Components/WheelPicker.svelte';
 	import ConfigButtons from '$lib/Modal/ConfigButtons.svelte';
 	import { getName, getSupport } from '$lib/Utils';
 	import { callService } from 'home-assistant-js-websocket';
@@ -10,8 +9,6 @@
 
 	export let isOpen: boolean;
 	export let sel: any;
-
-	const debug = false;
 
 	const presetModeIcons: Record<string, string> = {
 		none: 'mdi:power-off',
@@ -109,9 +106,6 @@
 			entity_id,
 			[service]: to_state
 		});
-		if (debug) {
-			console.debug('climate.set_' + service, '->', to_state);
-		}
 	}
 
 	// TODO: check range. how pass temp?
@@ -211,13 +205,13 @@
 		{/if}
 
 		<ConfigButtons />
-		{#if debug}
+		{#if $isDebug}
 			<h2>Debug</h2>
+			<small>component: Humidifier.svelte</small>
+			<h4>sel</h4>
+			<pre><code>{JSON.stringify(sel, null, 2)}</code></pre>
+			<h4>entity</h4>
 			<pre><code>{JSON.stringify(entity, null, 2)}</code></pre>
-			<h2>Supports</h2>
-			{#each Object.entries(supports) as [feature, supported]}
-				<div>{feature}: {supported}</div>
-			{/each}
 		{/if}
 	</Modal>
 {/if}

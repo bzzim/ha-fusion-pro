@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { connection, lang, states } from '$lib/Stores';
+	import { connection, isDebug, lang, states } from '$lib/Stores';
 	import Modal from '$lib/Modal/Index.svelte';
-	import ConfigButtons from '$lib/Modal/ConfigButtons.svelte';
 	import { getName, getSupport } from '$lib/Utils';
 	import { callService } from 'home-assistant-js-websocket';
 	import UniversalSelect from '$lib/Components/UniversalSelect.svelte';
@@ -10,7 +9,6 @@
 	export let isOpen: boolean;
 	export let sel: any;
 
-	const debug = false;
 	const speedIcons: Record<string, string> = {
 		low: 'mdi:fan-minus',
 		silent: 'mdi:fan-minus',
@@ -74,7 +72,9 @@
 	$: statusDescription =
 		attributes !== undefined &&
 		attributes['vacuum.status_desc'] &&
-		state !== attributes['vacuum.status_desc'];
+		state !== attributes['vacuum.status_desc']
+			? attributes['vacuum.status_desc']
+			: '';
 
 	$: supports = getSupport(supportedFeatures, {
 		TURN_ON: 1,
@@ -166,16 +166,14 @@
 			/>
 		{/if}
 
-		{#if debug}
+		{#if $isDebug}
 			<h2>Debug</h2>
+			<small>component: Humidifier.svelte</small>
+			<h4>sel</h4>
+			<pre><code>{JSON.stringify(sel, null, 2)}</code></pre>
+			<h4>entity</h4>
 			<pre><code>{JSON.stringify(entity, null, 2)}</code></pre>
-			<h2>Supports</h2>
-			{#each Object.entries(supports) as [feature, supported]}
-				<div>{feature}: {supported}</div>
-			{/each}
 		{/if}
-
-		<ConfigButtons />
 	</Modal>
 {/if}
 

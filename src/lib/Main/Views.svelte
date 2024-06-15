@@ -231,7 +231,7 @@
 
 	.underline {
 		position: absolute;
-		bottom: 0rem;
+		bottom: 0;
 		height: 3px;
 		background: white;
 	}

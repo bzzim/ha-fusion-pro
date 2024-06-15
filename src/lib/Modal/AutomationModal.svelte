@@ -2,7 +2,6 @@
 	import { states, connection, lang, timer, selectedLanguage, ripple, motion } from '$lib/Stores';
 	import { callService } from 'home-assistant-js-websocket';
 	import Toggle from '$lib/Components/Toggle.svelte';
-	import ConfigButtons from '$lib/Modal/ConfigButtons.svelte';
 	import Modal from '$lib/Modal/Index.svelte';
 	import { getName } from '$lib/Utils';
 	import Icon from '@iconify/svelte';
@@ -116,8 +115,6 @@
 				<button class="done action" use:Ripple={$ripple} on:click={handleTrigger}>
 					{$lang(current ? 'cancel' : 'trigger')}
 				</button>
-
-				<ConfigButtons {sel} />
 			</div>
 		</div>
 	</Modal>

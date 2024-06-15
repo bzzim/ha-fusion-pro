@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { states, lang, connection, selectedLanguage } from '$lib/Stores';
+	import { states, lang, connection, selectedLanguage, isDebug } from '$lib/Stores';
 	import Modal from '$lib/Modal/Index.svelte';
-	import ConfigButtons from '$lib/Modal/ConfigButtons.svelte';
 	import { getName } from '$lib/Utils';
 	import { callService } from 'home-assistant-js-websocket';
 	import RangeSlider from '$lib/Components/RangeSlider.svelte';
@@ -9,8 +8,6 @@
 
 	export let isOpen: boolean;
 	export let sel: any;
-
-	const debug = false;
 
 	$: entity = $states?.[sel?.entity_id];
 	$: attr = entity?.attributes;
@@ -136,9 +133,12 @@
 			/>
 		{/if}
 
-		<ConfigButtons />
-		{#if debug}
+		{#if $isDebug}
 			<h2>Debug</h2>
+			<small>component: Humidifier.svelte</small>
+			<h4>sel</h4>
+			<pre><code>{JSON.stringify(sel, null, 2)}</code></pre>
+			<h4>entity</h4>
 			<pre><code>{JSON.stringify(entity, null, 2)}</code></pre>
 		{/if}
 	</Modal>

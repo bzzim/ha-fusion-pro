@@ -181,7 +181,6 @@
 	.math {
 		padding: 0.6rem 0.7rem 0.45rem 0.7rem;
 		color: inherit;
-		border: none;
 		background-color: rgb(73 134 162 / 21%);
 		border: 1px solid rgb(255 255 255 / 15%);
 		cursor: pointer;

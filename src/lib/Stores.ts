@@ -15,6 +15,8 @@ import type {
 } from 'home-assistant-js-websocket';
 import { getName } from './Utils';
 
+export const isDebug = readable(false);
+
 // hass
 export const connection = writable<Connection>();
 export const config = writable<HassConfig>();

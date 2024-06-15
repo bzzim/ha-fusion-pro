@@ -40,6 +40,7 @@
 	</div>
 {:else}
 	<Select
+		readonly
 		options={items}
 		placeholder={$lang('options')}
 		value={selected}

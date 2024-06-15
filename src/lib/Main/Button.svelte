@@ -598,7 +598,6 @@
 		color: rgb(200 200 200);
 		background-color: rgba(0, 0, 0, 0.25);
 		border-radius: 50%;
-		display: grid;
 		align-items: center;
 		display: flex;
 		padding: 0.5rem;
@@ -610,7 +609,6 @@
 	.name {
 		grid-area: name;
 		font-weight: 500;
-		color: inherit;
 		white-space: nowrap;
 		color: var(--theme-button-name-color-off);
 		overflow: hidden;
@@ -652,6 +650,12 @@
 	@media all and (max-width: 768px) {
 		.container {
 			width: calc(50vw - 1.45rem);
+		}
+	}
+
+	@media all and (max-width: 380px) {
+		.container {
+			width: calc(100vw - 2.45rem);
 		}
 	}
 </style>

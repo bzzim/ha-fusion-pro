@@ -187,21 +187,21 @@
 	.container {
 		padding: var(--theme-sidebar-item-padding);
 		display: flex;
-		text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+		text-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 		text-overflow: ellipsis;
 		overflow: hidden;
-		justify-content: space-between;
 		padding-left: 0;
 		padding-right: 0.25rem;
 		margin-left: -0.1rem;
-		height: 7.5rem;
+		flex-wrap: wrap;
+		min-height: 7.5rem;
 	}
 
 	.empty {
 		word-wrap: break-word;
 		padding: 0.5em;
 		overflow: hidden;
-		text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+		text-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 		height: 7.5rem;
 	}
 

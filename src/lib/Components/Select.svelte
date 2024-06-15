@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ComputeIcon from '$lib/Components/ComputeIcon.svelte';
-	import { motion } from '$lib/Stores';
+	import { isDebug, motion } from '$lib/Stores';
 	import { tick } from 'svelte';
 	import VirtualList, { type Alignment, type ScrollBehaviour } from 'svelte-tiny-virtual-list';
 	import { scale, slide } from 'svelte/transition';
@@ -14,14 +14,13 @@
 	export let getIconString: boolean | undefined = undefined;
 	export let defaultIcon: string | undefined = undefined;
 	export let clearable: boolean | undefined = undefined;
+	export let readonly: boolean = false;
 	export let options: {
 		id: string;
 		label: string;
 		hint?: string;
 		icon?: string;
 	}[];
-
-	const DEBUG = false;
 
 	let listOpen = false;
 	let search: string;
@@ -67,51 +66,23 @@
 		type: 'text',
 		class: 'input',
 		placeholder,
-		style: `padding-left: ${options?.[selectedIndex]?.icon || computeIcons ? '3.1rem' : '1rem'}`
+		style: `cursor: ${readonly ? 'pointer' : 'inherit'}; padding-left: ${options?.[selectedIndex]?.icon || computeIcons ? '3.1rem' : '1rem'}`
 	};
 
 	function handleKeydown(event: any) {
 		if (!listOpen) return;
-
-		// up
-		if (event.key === 'ArrowUp') {
-			event.preventDefault();
-			highlightedIndex = Math.max(highlightedIndex - 1, 0);
-			scrollToIndex = highlightedIndex;
-		}
-
-		// down
-		else if (event.key === 'ArrowDown') {
-			event.preventDefault();
-			highlightedIndex = Math.min(highlightedIndex + 1, filter.length - 1);
-			scrollToIndex = highlightedIndex;
-		}
-
-		// enter
-		else if (event.key === 'Enter') {
-			if (highlightedIndex >= 0 && highlightedIndex < filter.length) {
-				value = filter?.[highlightedIndex]?.id;
-			}
-			listOpen = false;
-			if (input) input?.blur();
-		}
-
-		// escape
-		else if (event.key === 'Escape') {
+		if (event.key === 'Escape') {
 			event.stopPropagation();
-			listOpen = false;
-			if (input) input?.blur();
-		}
-
-		// tab
-		else if (event.key === 'Tab') {
 			listOpen = false;
 		}
 	}
 
 	async function handleFocus() {
 		// lookup index
-		listOpen = true;
+		listOpen = !listOpen;
+		if (!listOpen) {
+			return;
+		}
 		await tick();
 		const index = filter.findIndex((option: { id: string }) => option.id === value);
 
@@ -136,7 +107,7 @@
 
 <svelte:window on:pointerdown={handlePointerDown} on:keydown|capture={handleKeydown} />
 
-{#if DEBUG}
+{#if $isDebug}
 	<code style:color="#dfdf00">
 		highlightedIndex: {highlightedIndex} <br />
 		filter.length: {filter.length} <br />
@@ -168,7 +139,7 @@
 			style:transition="transform {$motion / 1.5}ms ease"
 			transition:scale={{ duration: $motion }}
 		>
-			<Icon icon="octicon:chevron-down-12" height="auto" />
+			<Icon icon="octicon:chevron-down-12" height="1rem" />
 		</button>
 	{:else if value && clearable}
 		<button
@@ -178,15 +149,17 @@
 			}}
 			transition:scale={{ duration: $motion }}
 		>
-			<Icon icon="mingcute:close-fill" height="auto" />
+			<Icon icon="mingcute:close-fill" height="1rem" />
 		</button>
 	{/if}
 
 	{#if listOpen}
 		<input
+			autocomplete="false"
+			{readonly}
 			bind:value={search}
 			bind:this={input}
-			on:focus={handleFocus}
+			on:click={handleFocus}
 			on:input={() => {
 				highlightedIndex = 0;
 				scrollToIndex = highlightedIndex;
@@ -196,8 +169,10 @@
 	{:else}
 		<!-- only to display label -->
 		<input
+			autocomplete="false"
+			{readonly}
 			value={options?.[selectedIndex]?.label || ''}
-			on:focus={async () => {
+			on:click={async () => {
 				listOpen = true;
 				await tick();
 				input?.focus();
@@ -235,7 +210,6 @@
 				on:click={() => {
 					value = filter?.[index]?.id;
 					listOpen = false;
-					if (input) input?.blur();
 				}}
 			>
 				<div
@@ -295,10 +269,6 @@
 		cursor: pointer;
 	}
 
-	.input {
-		padding-right: 3rem !important;
-	}
-
 	/* list */
 
 	.wrapper {
@@ -307,6 +277,27 @@
 		background-color: #1d1b18;
 		border-radius: 0.6rem;
 		overflow: hidden;
+	}
+
+	:global(.virtual-list-wrapper::-webkit-scrollbar) {
+		width: 1em; /* Total width including `border-width` of scrollbar thumb */
+		height: 0;
+	}
+	:global(.virtual-list-wrapper::-webkit-scrollbar-thumb) {
+		height: 0.3em;
+		border: 0.3em solid rgba(0, 0, 0, 0); /* Transparent border together with `background-clip: padding-box` does the trick */
+		background-clip: padding-box;
+		-webkit-border-radius: 1em;
+		background-color: rgba(0, 0, 0, 0.5);
+		-webkit-box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.025);
+	}
+	:global(.virtual-list-wrapper::-webkit-scrollbar-button) {
+		width: 0;
+		height: 0;
+		display: none;
+	}
+	:global(.virtual-list-wrapper::-webkit-scrollbar-corner) {
+		background-color: transparent;
 	}
 
 	[slot='item'] {
@@ -343,6 +334,7 @@
 		display: grid;
 		gap: 0.2rem;
 		overflow: hidden;
+		text-wrap: nowrap;
 	}
 
 	.name {

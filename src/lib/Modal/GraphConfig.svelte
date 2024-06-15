@@ -7,7 +7,8 @@
 		history,
 		historyIndex,
 		record,
-		ripple
+		ripple,
+		isDebug
 	} from '$lib/Stores';
 	import { onDestroy } from 'svelte';
 	import Graph from '$lib/Sidebar/Graph.svelte';
@@ -213,6 +214,15 @@
 		</div>
 
 		<ConfigButtons {sel} />
+
+		{#if $isDebug}
+			<h2>Debug</h2>
+			<small>component: GraphConfig.svelte</small>
+			<h4>sel</h4>
+			<pre><code>{JSON.stringify(sel, null, 2)}</code></pre>
+			<h4>op</h4>
+			<pre><code>{JSON.stringify(options, null, 2)}</code></pre>
+		{/if}
 	</Modal>
 {/if}
 

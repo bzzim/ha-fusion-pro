@@ -32,7 +32,7 @@
 		grid-template-areas: 'left right';
 		position: absolute;
 		align-self: end;
-		width: inherit;
+		width: 100%;
 		z-index: 1;
 		background-color: rgba(0, 0, 0, 0.25);
 		backdrop-filter: blur(1rem);

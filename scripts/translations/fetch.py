@@ -58,6 +58,8 @@ dir_keys = [
             ("brightness", ["ui.card.light.brightness"]),
             ("change_color", ["ui.dialogs.more_info_control.light.color_picker.title"]),
             ("color", ["ui.dialogs.more_info_control.light.color_picker.mode.color"]),
+            ("effect", ["ui.card.light.effect"]),
+            ("select_effect", ["ui.dialogs.more_info_control.light.select_effect"]),
             ("color_temp", ["ui.dialogs.more_info_control.light.color_picker.mode.color_temp"]),
             ("toggle", ["ui.dialogs.more_info_control.light.toggle"]),
             ("menu", ["ui.common.menu"]),

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { states, selectedLanguage, lang, ripple, connection } from '$lib/Stores';
+	import { states, selectedLanguage, lang, ripple, connection, isDebug } from '$lib/Stores';
 	import Modal from '$lib/Modal/Index.svelte';
 	import LightSlider from '$lib/Components/LightSlider.svelte';
 	import ColorPicker from '$lib/Components/ColorPicker.svelte';
@@ -7,9 +7,9 @@
 	import Ripple from 'svelte-ripple';
 	import { getName } from '$lib/Utils';
 	import { callService, type HassEntity } from 'home-assistant-js-websocket';
-	import Toggle from '$lib/Components/Toggle.svelte';
 	import { onMount } from 'svelte';
 	import Select from '$lib/Components/Select.svelte';
+	import ButtonsToggle from '$lib/Components/ButtonsToggle.svelte';
 
 	export let isOpen: boolean;
 	export let sel: any;
@@ -61,6 +61,12 @@
 		? attributes?.supported_color_modes
 		: [attributes?.supported_color_modes].filter(Boolean);
 
+	$: effectModes = Array.isArray(attributes?.effect_list)
+		? attributes?.effect_list.map((i) => {
+				return { id: i.toString(), label: i.toString().replace('_', ' ') };
+			})
+		: [];
+
 	$: colorMode = attributes?.color_mode;
 	$: selTab = selTabClicked
 		? selTab
@@ -70,9 +76,10 @@
 				? 'color'
 				: colorMode;
 
-	$: toggle = entity?.state === 'on';
+	$: isPowerOn = entity?.state === 'on';
 	$: current = Math.round(rangeValue / 2.55);
 	$: brightness = entity?.attributes?.brightness;
+	$: effect = entity?.attributes?.effect;
 
 	$: supports = {
 		COLOR_MODE: colorModes?.includes(colorMode),
@@ -93,6 +100,13 @@
 	function handleClick() {
 		callService($connection, 'light', 'toggle', {
 			entity_id: entity?.entity_id
+		});
+	}
+
+	function handleSelectEffect(effect: string) {
+		callService($connection, 'light', 'turn_on', {
+			entity_id: entity?.entity_id,
+			effect
 		});
 	}
 
@@ -186,7 +200,7 @@
 
 		<h2>{$lang('toggle')}</h2>
 
-		<Toggle bind:checked={toggle} on:change={handleClick} />
+		<ButtonsToggle isOn={isPowerOn} on:change={handleClick} />
 
 		<!-- BRIGHTNESS -->
 		{#if supports?.BRIGHTNESS}
@@ -197,6 +211,18 @@
 				</span>
 			</h2>
 			<LightSlider {entity} {debounce} {timeout} {brightness} bind:rangeValue bind:current />
+		{/if}
+
+		{#if effectModes.length > 0}
+			<h2>{$lang('effect')}</h2>
+
+			<Select
+				readonly={true}
+				options={effectModes}
+				value={effect}
+				placeholder={$lang('select_effect')}
+				on:change={(e) => handleSelectEffect(e.detail)}
+			/>
 		{/if}
 
 		<!-- COLOR -->
@@ -249,5 +275,13 @@
 		{/if}
 
 		<ConfigButtons />
+		{#if $isDebug}
+			<h2>Debug</h2>
+			<small>component: LightModal.svelte</small>
+			<h4>sel</h4>
+			<pre><code>{JSON.stringify(sel, null, 2)}</code></pre>
+			<h4>entity</h4>
+			<pre><code>{JSON.stringify(entity, null, 2)}</code></pre>
+		{/if}
 	</Modal>
 {/if}
