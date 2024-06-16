@@ -169,11 +169,12 @@
 		color: inherit;
 		cursor: pointer;
 		width: 3rem;
+		height: 3rem;
 		border: none;
 		border-radius: 50%;
 		position: absolute !important;
-		right: 0;
-		top: 1rem;
+		right: 0.5rem;
+		top: 0.5rem;
 	}
 
 	button:focus {

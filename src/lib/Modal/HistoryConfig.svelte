@@ -1,5 +1,14 @@
 <script lang="ts">
-	import { dashboard, lang, record, history, historyIndex, ripple, entityList } from '$lib/Stores';
+	import {
+		dashboard,
+		lang,
+		record,
+		history,
+		historyIndex,
+		ripple,
+		entityList,
+		isDebug
+	} from '$lib/Stores';
 	import { onDestroy } from 'svelte';
 	import History from '$lib/Sidebar/History.svelte';
 	import Select from '$lib/Components/Select.svelte';
@@ -8,6 +17,7 @@
 	import { updateObj } from '$lib/Utils';
 	import type { HistoryItem } from '$lib/Types';
 	import Ripple from 'svelte-ripple';
+	import UniversalSelect from '$lib/Components/UniversalSelect.svelte';
 
 	export let isOpen: boolean;
 	export let sel: HistoryItem;
@@ -46,7 +56,11 @@
 
 		{#if sel?.entity_id}
 			<div class="preview">
-				<History entity_id={sel.entity_id} period={sel?.period} />
+				<History
+					entity_id={sel.entity_id}
+					period={sel?.period}
+					hideIndicatorValue={sel?.hide_indicator_value}
+				/>
 			</div>
 		{/if}
 
@@ -65,14 +79,32 @@
 		<h2>{$lang('period')}</h2>
 
 		{#if sel && periodOptions}
-			<Select
-				options={periodOptions}
-				placeholder={$lang('period')}
-				value={sel?.period || 'hour'}
+			<UniversalSelect
+				items={periodOptions}
+				selected={sel?.period || 'hour'}
 				on:change={(event) => set('period', event)}
 			/>
 		{/if}
 
+		<h2>{$lang('state_label')}</h2>
+
+		<div class="button-container">
+			<button
+				class:selected={sel?.hide_indicator_value !== true}
+				on:click={() => set('hide_indicator_value')}
+				use:Ripple={$ripple}
+			>
+				{$lang('show')}
+			</button>
+
+			<button
+				class:selected={sel?.hide_indicator_value === true}
+				on:click={() => set('hide_indicator_value', true)}
+				use:Ripple={$ripple}
+			>
+				{$lang('hide')}
+			</button>
+		</div>
 		<h2>{$lang('mobile')}</h2>
 
 		<div class="button-container">
@@ -94,5 +126,14 @@
 		</div>
 
 		<ConfigButtons {sel} />
+
+		{#if $isDebug}
+			<h2>Debug</h2>
+			<small>component: HistoryConfig.svelte</small>
+			<h4>sel</h4>
+			<pre><code>{JSON.stringify(sel, null, 2)}</code></pre>
+			<h4>op</h4>
+			<pre><code>{JSON.stringify(options, null, 2)}</code></pre>
+		{/if}
 	</Modal>
 {/if}

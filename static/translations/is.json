@@ -236,6 +236,7 @@
 	"start_over": "Byrja upp á nýtt",
 	"start_pause": "Byrja/Hlé",
 	"state": "Staða",
+	"state_label": "Staða einingar",
 	"status": "Staða",
 	"stop": "Stöðva",
 	"stop_cover": "Stop cover",

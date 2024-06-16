@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { connection, states, selectedLanguage, onStates, lang } from '$lib/Stores';
+	import { connection, states, selectedLanguage, onStates, lang, isDebug } from '$lib/Stores';
 	import { onDestroy } from 'svelte';
 	import { getName } from '$lib/Utils';
 
 	export let entity_id: string;
 	export let period: string | undefined = 'hour';
+	export let hideIndicatorValue: boolean | undefined = false;
 
 	let start_time: Date;
 	let end_time: Date;
@@ -13,7 +14,9 @@
 	let unsubscribe: () => void;
 
 	const setTime = () => {
-		if (period) start_time = new Date(new Date().getTime() - getMs(period));
+		if (period) {
+			start_time = new Date(new Date().getTime() - getMs(period));
+		}
 		end_time = new Date();
 	};
 
@@ -91,7 +94,20 @@
 
 	function processTimelineData(data: any) {
 		let events = [];
-		let totalDuration = end_time.getTime() / 1000 - data.start_time;
+		let totalDuration = 0;
+
+		for (let i = 0; i < data.states[entity_id].length; i++) {
+			let start = data.states[entity_id][i].lu;
+			let end;
+
+			if (i < data.states[entity_id].length - 1) {
+				end = data.states[entity_id][i + 1].lu;
+			} else {
+				end = end_time.getTime() / 1000;
+			}
+
+			totalDuration = totalDuration + (end - start);
+		}
 
 		for (let i = 0; i < data.states[entity_id].length; i++) {
 			let start = data.states[entity_id][i].lu;
@@ -145,6 +161,9 @@
 </script>
 
 <div class="container">
+	{#if $isDebug}
+		<small>component: History.svelte</small>
+	{/if}
 	<span class="text">
 		{getName(undefined, $states?.[entity_id])} &nbsp;
 		<br />
@@ -167,7 +186,9 @@
 					on:pointerenter={() => handlePointerEnter(event)}
 					on:pointerleave={handlePointerLeave}
 				>
-					<span class="state"> {$lang(event.state)}</span>
+					{#if !hideIndicatorValue}
+						<span class="state"> {$lang(event.state)}</span>
+					{/if}
 				</div>
 			{/each}
 		</div>
@@ -205,9 +226,14 @@
 	.event {
 		overflow: hidden;
 		align-self: center;
-		text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+		text-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 		padding-top: 0.25rem;
 		padding-bottom: 0.25rem;
+		min-height: 1.3rem;
+	}
+
+	.event:hover {
+		background-color: rgba(255, 255, 255, 0.4) !important;
 	}
 
 	.event.on {

@@ -25,7 +25,7 @@
 	<div class="button-container">
 		{#each items as i}
 			<button
-				title={$lang(i.label)}
+				title={i.label}
 				class:selected={i.id === selected}
 				on:click={() => handleChange(i.id)}
 				use:Ripple={$ripple}
@@ -34,6 +34,8 @@
 					<span class="icon">
 						<Icon icon={i.icon} height="auto" />
 					</span>
+				{:else}
+					{i.label}
 				{/if}
 			</button>
 		{/each}

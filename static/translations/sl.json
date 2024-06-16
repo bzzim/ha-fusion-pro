@@ -224,6 +224,7 @@
 	"start_over": "Začeti znova",
 	"start_pause": "Začetek/Premor",
 	"state": "Stanje",
+	"state_label": "Stanje entitete",
 	"status": "Stanje",
 	"stop": "Ustavi",
 	"stop_cover": "Stop cover",

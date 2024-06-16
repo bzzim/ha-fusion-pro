@@ -286,6 +286,7 @@
 	"start_over": "다시 시작",
 	"start_pause": "시작 / 일시정지",
 	"state": "상태",
+	"state_label": "구성요소 상태",
 	"status": "상태",
 	"stop": "중지하기",
 	"stop_cover": "커버 중지",

@@ -194,6 +194,7 @@
 	"start_over": "Start over",
 	"start_pause": "Start/pause",
 	"state": "Egoera",
+	"state_label": "Entity state",
 	"status": "Status",
 	"stop": "Gelditu",
 	"stop_cover": "Stop cover",

@@ -1,16 +1,27 @@
 # Changelog FUSION pro
 
-## [0.0.3] - 2024-06-16
+## [0.0.3] - 2024-06-17
 
 ### Added
 
 - Read-only selection. Disable search input in mode selection
 - LightModal: support effects
+- GraphConfig:
+  - RangeSlider instead input for change size
+  - Selecting a period using buttons instead of entering a search
+- HistoryConfig:
+  - The Option hide value indicator
+  - Selecting a period using buttons instead of entering a search-
+- History:
+  - The Option hide value indicator
+  - Highlight current period on hover
+- Sidebar: hover outline in edit mode
 
 ### Remove
 
 - Select: navigation by keyboard
 - Modal: close by drag
+- GraphConfig: unused date fields
 
 ### Fixed
 
@@ -19,6 +30,10 @@
 - UpdateModal: fix style and hide buttons if installed latest
 - LightModal: replace the power switch with a button switch
 - Horizontal stack: responsive
+- History: display history if there is fewer data for the selected period
+- AlarmControlPanelModal
+  - Current state as buttons
+  - Show the code panel when device required code
 - Modal
   - Touch scroll
   - Action buttons for mobile view

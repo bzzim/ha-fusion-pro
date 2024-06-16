@@ -284,6 +284,7 @@
 	"start_over": "Start over",
 	"start_pause": "Start/pause",
 	"state": "State",
+	"state_label": "Entity state",
 	"status": "Status",
 	"stop": "Stop",
 	"stop_cover": "Stop cover",

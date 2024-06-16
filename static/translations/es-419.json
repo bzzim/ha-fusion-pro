@@ -195,6 +195,7 @@
 	"start_over": "Comenzar de nuevo",
 	"start_pause": "Iniciar/Pausar",
 	"state": "Estado",
+	"state_label": "Estado de la entidad",
 	"status": "Estado",
 	"stop": "Detener",
 	"stop_cover": "Detener cortina",

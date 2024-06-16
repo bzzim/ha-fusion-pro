@@ -194,6 +194,7 @@
 	"start_over": "വീണ്ടും തുടങ്ങുക",
 	"start_pause": "തുടങ്ങുക/താൽക്കാലികമായി നിർത്തുക",
 	"state": "നില",
+	"state_label": "Entity state",
 	"status": "നില",
 	"stop": "നിർത്തുക",
 	"stop_cover": "Stop cover",

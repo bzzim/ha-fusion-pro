@@ -285,6 +285,7 @@
 	"start_over": "Recommencer",
 	"start_pause": "Démarrer/Interrompre",
 	"state": "État",
+	"state_label": "État d'une entité",
 	"status": "État",
 	"stop": "Arrêter",
 	"stop_cover": "Arrêter le volet",

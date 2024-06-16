@@ -1,5 +1,15 @@
 <script lang="ts">
-	import { dashboard, record, lang, motion, ripple, states, connection, demo } from '$lib/Stores';
+	import {
+		dashboard,
+		record,
+		lang,
+		motion,
+		ripple,
+		states,
+		connection,
+		demo,
+		isDebug
+	} from '$lib/Stores';
 	import { openModal, closeModal } from 'svelte-modals';
 	import { onMount } from 'svelte';
 	import { flip } from 'svelte/animate';
@@ -185,6 +195,11 @@
 			id: 'date',
 			type: $lang('date'),
 			component: Date,
+			props: {
+				layout: 'horizontal',
+				show: ['day', 'month', 'year'],
+				short: ['day']
+			},
 			style: {
 				'text-align': 'center'
 			}
@@ -381,7 +396,9 @@
 		}}
 	>
 		<h1 slot="title">{$lang('options')}</h1>
-
+		{#if $isDebug}
+			<small>component: SidebarItemConfig.svelte</small>
+		{/if}
 		<div class="search">
 			<InputClear
 				condition={searchString}
@@ -470,7 +487,11 @@
 	}
 
 	.camera {
+		width: 100%;
 		padding: 1rem 1.2rem;
 		height: inherit;
+	}
+	:global(.camera button) {
+		width: 100% !important;
 	}
 </style>

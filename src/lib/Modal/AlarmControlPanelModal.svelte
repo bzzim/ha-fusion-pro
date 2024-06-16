@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { states, lang, ripple, connection, motion } from '$lib/Stores';
+	import { states, lang, ripple, connection, motion, isDebug } from '$lib/Stores';
 	import Modal from '$lib/Modal/Index.svelte';
 	import StateLogic from '$lib/Components/StateLogic.svelte';
 	import { getName } from '$lib/Utils';
@@ -8,6 +8,7 @@
 	import { callService } from 'home-assistant-js-websocket';
 	import { onDestroy } from 'svelte';
 	import Select from '$lib/Components/Select.svelte';
+	import UniversalSelect from '$lib/Components/UniversalSelect.svelte';
 
 	export let isOpen: boolean;
 	export let sel: any;
@@ -27,6 +28,16 @@
 
 	function clearCode() {
 		code = '';
+	}
+
+	function handleService(state: string) {
+		const service = options.find((s) => s.id === state)?.service;
+		if (!service) {
+			return;
+		}
+		callService($connection, 'alarm_control_panel', service, {
+			entity_id: entity_id
+		});
 	}
 
 	async function enterCode() {
@@ -60,32 +71,38 @@
 
 	const options = [
 		{
-			id: 'alarm_arm_home',
+			id: 'armed_home',
+			service: 'alarm_arm_home',
 			icon: 'mdi:house',
 			label: $lang('alarm_modes_armed_home')
 		},
 		{
-			id: 'alarm_arm_away',
+			id: 'armed_away',
+			service: 'alarm_arm_away',
 			icon: 'mdi:lock',
 			label: $lang('alarm_modes_armed_away')
 		},
 		{
-			id: 'alarm_arm_night',
+			id: 'armed_night',
+			service: 'alarm_arm_night',
 			icon: 'mdi:moon-waning-crescent',
 			label: $lang('alarm_modes_armed_night')
 		},
+		// {
+		// 	id: 'armed_vacation',
+		// 	service: 'alarm_arm_vacation',
+		// 	icon: 'mdi:airplane',
+		// 	label: $lang('alarm_modes_armed_vacation')
+		// },
+		// {
+		// 	id: 'armed_custom_bypass',
+		//  service: 'alarm_arm_custom_bypass',
+		// 	icon: 'mdi:shield',
+		// 	label: $lang('alarm_modes_armed_custom_bypass')
+		// },
 		{
-			id: 'alarm_arm_vacation',
-			icon: 'mdi:airplane',
-			label: $lang('alarm_modes_armed_vacation')
-		},
-		{
-			id: 'alarm_arm_custom_bypass',
-			icon: 'mdi:shield',
-			label: $lang('alarm_modes_armed_custom_bypass')
-		},
-		{
-			id: 'alarm_disarm',
+			id: 'disarmed',
+			service: 'alarm_disarm',
 			icon: 'mdi:shield-off',
 			label: $lang('alarm_modes_disarmed')
 		}
@@ -102,51 +119,60 @@
 			<StateLogic entity_id={sel?.entity_id} selected={sel} />
 		</span>
 
-		{#if state === 'disarmed'}
+		{#if !entity.attributes.code_arm_required || state === 'disarmed'}
 			<h2>{$lang('alarm_modes_label')}</h2>
 
-			<Select
-				{options}
-				placeholder={$lang('alarm_modes_label')}
-				value={'alarm_disarm'}
+			<UniversalSelect
+				items={options}
+				selected={entity.state}
 				on:change={(event) => {
-					selectedService = event.detail;
+					handleService(event.detail);
 				}}
 			/>
 		{/if}
+		{#if entity.attributes.code_arm_required}
+			<div class="container">
+				<input type="password" class:reject bind:value={code} />
 
-		<div class="container">
-			<input type="password" class:reject bind:value={code} />
+				<div class="buttons">
+					{#each [1, 2, 3, 4, 5, 6, 7, 8, 9] as digit}
+						<button on:click={() => addCode(digit)} use:Ripple={$ripple}>
+							{digit}
+						</button>
+					{/each}
 
-			<div class="buttons">
-				{#each [1, 2, 3, 4, 5, 6, 7, 8, 9] as digit}
-					<button on:click={() => addCode(digit)} use:Ripple={$ripple}>
-						{digit}
+					<button
+						on:click={clearCode}
+						use:Ripple={$ripple}
+						style:background-color={code === '' ? '' : '#422522'}
+						style:transition="background-color {$motion}ms ease"
+					>
+						<Icon
+							icon="gravity-ui:xmark"
+							height="none"
+							style={`width: 1.65rem; ${
+								code === '' ? '' : `color: #e15241; transition: background-color ${$motion}ms ease;`
+							}`}
+						></Icon>
 					</button>
-				{/each}
 
-				<button
-					on:click={clearCode}
-					use:Ripple={$ripple}
-					style:background-color={code === '' ? '' : '#422522'}
-					style:transition="background-color {$motion}ms ease"
-				>
-					<Icon
-						icon="gravity-ui:xmark"
-						height="none"
-						style={`width: 1.65rem; ${
-							code === '' ? '' : `color: #e15241; transition: background-color ${$motion}ms ease;`
-						}`}
-					></Icon>
-				</button>
+					<button on:click={() => addCode(0)} use:Ripple={$ripple}>0</button>
 
-				<button on:click={() => addCode(0)} use:Ripple={$ripple}>0</button>
-
-				<button on:click={enterCode} use:Ripple={$ripple} style:background-color="#293828">
-					<Icon icon="gravity-ui:check" height="none" style="width: 1.8rem; color: #67ad5b;"></Icon>
-				</button>
+					<button on:click={enterCode} use:Ripple={$ripple} style:background-color="#293828">
+						<Icon icon="gravity-ui:check" height="none" style="width: 1.8rem; color: #67ad5b;"
+						></Icon>
+					</button>
+				</div>
 			</div>
-		</div>
+		{/if}
+		{#if $isDebug}
+			<h2>Debug</h2>
+			<small>component: AlarmControlPanelModal.svelte</small>
+			<h4>sel</h4>
+			<pre><code>{JSON.stringify(sel, null, 2)}</code></pre>
+			<h4>entity</h4>
+			<pre><code>{JSON.stringify(entity, null, 2)}</code></pre>
+		{/if}
 	</Modal>
 {/if}
 
@@ -157,7 +183,6 @@
 
 	input[type='password'] {
 		text-align: center;
-		margin-bottom: 20px;
 		font-size: 3.2rem;
 		border: none;
 		border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -174,8 +199,7 @@
 		grid-template-columns: repeat(3, 1fr);
 		column-gap: 2.2rem;
 		row-gap: 1.2rem;
-		margin: auto;
-		margin-bottom: 2.5rem;
+		margin: auto auto 2.5rem;
 	}
 
 	button {

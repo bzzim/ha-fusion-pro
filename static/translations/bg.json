@@ -253,6 +253,7 @@
 	"start_over": "Start over",
 	"start_pause": "Старт/Пауза",
 	"state": "State",
+	"state_label": "Състояние на обекта",
 	"status": "Състояние",
 	"stop": "Стоп",
 	"stop_cover": "Спиране на покривало",

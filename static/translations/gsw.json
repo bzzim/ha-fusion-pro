@@ -209,6 +209,7 @@
 	"start_over": "Nomau aafah",
 	"start_pause": "Starte/pouse",
 	"state": "Status",
+	"state_label": "Entität-Zuestand",
 	"status": "Status",
 	"stop": "Stope",
 	"stop_cover": "Bländi stoppe",

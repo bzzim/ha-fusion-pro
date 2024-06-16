@@ -195,6 +195,7 @@
 	"start_over": "重新开始",
 	"start_pause": "启动/暂停",
 	"state": "状态",
+	"state_label": "实体状态",
 	"status": "状况",
 	"stop": "停止",
 	"stop_cover": "停止窗帘移动",

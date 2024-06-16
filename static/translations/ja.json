@@ -286,6 +286,7 @@
 	"start_over": "やり直す",
 	"start_pause": "開始/一時停止",
 	"state": "状態",
+	"state_label": "エンティティの状態",
 	"status": "ステータス",
 	"stop": "停止",
 	"stop_cover": "カバーを止める",

@@ -286,6 +286,7 @@
 	"start_over": "Neu anfangen",
 	"start_pause": "Start/Pause",
 	"state": "Zustand",
+	"state_label": "Entitätsstatus",
 	"status": "Status",
 	"stop": "Stoppen",
 	"stop_cover": "Abdeckung stoppen",

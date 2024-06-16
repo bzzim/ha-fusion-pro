@@ -277,6 +277,7 @@
 	"start_over": "Zacznij od nowa",
 	"start_pause": "Start/Wstrzymaj",
 	"state": "Stan",
+	"state_label": "Stan encji",
 	"status": "Status",
 	"stop": "Zatrzymaj",
 	"stop_cover": "Zatrzymaj",

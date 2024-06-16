@@ -19,6 +19,8 @@
 	import { updateObj, getName } from '$lib/Utils';
 	import type { GraphItem } from '$lib/Types';
 	import Ripple from 'svelte-ripple';
+	import UniversalSelect from '$lib/Components/UniversalSelect.svelte';
+	import RangeSlider from '$lib/Components/RangeSlider.svelte';
 
 	export let isOpen: boolean;
 	export let sel: GraphItem;
@@ -34,7 +36,7 @@
 	let name = sel?.name;
 
 	let options: { id: string; label: string }[];
-	let stroke = sel?.stroke;
+	let stroke = sel?.stroke ?? 0;
 
 	let numberElement: HTMLInputElement;
 
@@ -55,8 +57,8 @@
 		return Math.min(Math.max(parseInt(key as string), range.min), range.max);
 	}
 
-	function handleNumberRange(event: any) {
-		const value = minMax(event?.target?.value);
+	function handleNumberRange(v: number) {
+		const value = minMax(v);
 		set('stroke', value);
 		if (numberElement) numberElement.value = String(value);
 	}
@@ -149,49 +151,23 @@
 			/>
 		</InputClear>
 
-		<h2>{$lang('period')} (data_points)</h2>
+		<h2>{$lang('size')}</h2>
+		<RangeSlider
+			bind:value={stroke}
+			min={range.min}
+			max={range.max}
+			on:input={(e) => handleNumberRange(e?.detail)}
+		/>
+
+		<h2>{$lang('period')}</h2>
 
 		{#if periodOptions}
-			<Select
-				options={periodOptions}
-				placeholder={$lang('period')}
-				value={sel?.period}
+			<UniversalSelect
+				items={periodOptions}
+				selected={sel?.period}
 				on:change={(event) => set('period', event)}
 			/>
 		{/if}
-
-		<h2>start_time</h2>
-
-		<input
-			class="input"
-			type="text"
-			placeholder={new Date(Date.now() - 2629800 * 1000).toISOString()}
-			autocomplete="off"
-			spellcheck="false"
-		/>
-
-		<h2>end_time</h2>
-
-		<input
-			class="input"
-			type="text"
-			placeholder={new Date().toISOString()}
-			autocomplete="off"
-			spellcheck="false"
-		/>
-
-		<h2>{$lang('size')}</h2>
-
-		<input
-			class="input"
-			type="number"
-			placeholder="2"
-			on:input={handleNumberRange}
-			bind:value={stroke}
-			bind:this={numberElement}
-			min={range.min}
-			max={range.max}
-		/>
 
 		<h2>{$lang('mobile')}</h2>
 

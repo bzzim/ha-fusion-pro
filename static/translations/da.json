@@ -279,6 +279,7 @@
 	"start_over": "Start forfra",
 	"start_pause": "Start/pause",
 	"state": "Tilstand",
+	"state_label": "Entitetstilstand",
 	"status": "Status",
 	"stop": "Stop",
 	"stop_cover": "Stop gardin/port",

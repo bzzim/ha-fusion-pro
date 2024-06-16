@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { states, connection, selectedLanguage, lang } from '$lib/Stores';
+	import { states, connection, selectedLanguage, lang, isDebug } from '$lib/Stores';
 	import { scaleTime, scaleLinear } from 'd3-scale';
 	import { line, area, curveBasis } from 'd3-shape';
 	import { extent, bisector } from 'd3-array';
@@ -148,6 +148,9 @@
 </script>
 
 <div class="container">
+	{#if $isDebug}
+		<small>component: Graph.svelte</small>
+	{/if}
 	<p>
 		{#if friendlyName}
 			{friendlyName}
@@ -215,7 +218,7 @@
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		overflow: hidden;
-		text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+		text-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 	}
 
 	.timeline {

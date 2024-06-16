@@ -195,6 +195,7 @@
 	"start_over": "البدء من جديد",
 	"start_pause": "بدء/إيقاف مؤقت",
 	"state": "الحالة",
+	"state_label": "Entity state",
 	"status": "Status",
 	"stop": "توقف",
 	"stop_cover": "Stop cover",

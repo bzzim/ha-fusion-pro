@@ -272,6 +272,7 @@
 	"start_over": "Sākt no jauna",
 	"start_pause": "Sākt/Pauze",
 	"state": "Stāvoklis",
+	"state_label": "Entity state",
 	"status": "Statuss",
 	"stop": "Apturēt",
 	"stop_cover": "Stop cover",

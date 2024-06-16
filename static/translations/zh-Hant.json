@@ -195,6 +195,7 @@
 	"start_over": "重新開始",
 	"start_pause": "開始/暫停",
 	"state": "狀態",
+	"state_label": "實體狀態",
 	"status": "狀態",
 	"stop": "停止清掃",
 	"stop_cover": "停止門簾",

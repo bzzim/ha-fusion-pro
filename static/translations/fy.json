@@ -194,6 +194,7 @@
 	"start_over": "Oernij begjinne",
 	"start_pause": "Start/Pause",
 	"state": "Steat",
+	"state_label": "Entity state",
 	"status": "Status",
 	"stop": "Stop",
 	"stop_cover": "Stop bedekking",

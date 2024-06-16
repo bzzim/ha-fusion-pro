@@ -265,6 +265,7 @@
 	"start_over": "Start på nytt",
 	"start_pause": "Start / Pause",
 	"state": "Tilstand",
+	"state_label": "Entitetstilstand",
 	"status": "Status",
 	"stop": "Stopp",
 	"stop_cover": "Stopp deksel",

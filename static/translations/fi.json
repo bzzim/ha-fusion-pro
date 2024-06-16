@@ -286,6 +286,7 @@
 	"start_over": "Aloita alusta",
 	"start_pause": "Käynnistys / Tauko",
 	"state": "Tila",
+	"state_label": "Entiteetin tila",
 	"status": "Tila",
 	"stop": "Pysäytä",
 	"stop_cover": "Pysäytä suojus",

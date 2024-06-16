@@ -286,6 +286,7 @@
 	"start_over": "Börja om",
 	"start_pause": "Starta/Pausa",
 	"state": "Tillstånd",
+	"state_label": "Entitetstillstånd",
 	"status": "Status",
 	"stop": "Stoppa",
 	"stop_cover": "Stoppa skydd",

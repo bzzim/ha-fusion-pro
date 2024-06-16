@@ -4,6 +4,7 @@
 		entityList,
 		history,
 		historyIndex,
+		isDebug,
 		lang,
 		record,
 		ripple,
@@ -170,5 +171,14 @@
 		</div>
 
 		<ConfigButtons {sel} />
+
+		{#if $isDebug}
+			<h2>Debug</h2>
+			<small>component: SensorConfig.svelte</small>
+			<h4>sel</h4>
+			<pre><code>{JSON.stringify(sel, null, 2)}</code></pre>
+			<h4>op</h4>
+			<pre><code>{JSON.stringify(options, null, 2)}</code></pre>
+		{/if}
 	</Modal>
 {/if}

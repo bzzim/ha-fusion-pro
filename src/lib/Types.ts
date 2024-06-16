@@ -160,6 +160,7 @@ export interface HistoryItem {
 	id?: number;
 	entity_id?: string;
 	period?: string;
+	hide_indicator_value?: boolean;
 	hide_mobile?: boolean;
 }
 

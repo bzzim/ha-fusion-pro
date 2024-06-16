@@ -286,6 +286,7 @@
 	"start_over": "Mulai dari awal",
 	"start_pause": "Mulai/jeda",
 	"state": "Status",
+	"state_label": "Status entitas",
 	"status": "Status",
 	"stop": "Hentikan",
 	"stop_cover": "Hentikan penutup",

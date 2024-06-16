@@ -277,6 +277,7 @@
 	"start_over": "Ia-o de la capăt",
 	"start_pause": "Start/pauză",
 	"state": "Status",
+	"state_label": "Status entitate",
 	"status": "Stare",
 	"stop": "Stop",
 	"stop_cover": "Oprește",

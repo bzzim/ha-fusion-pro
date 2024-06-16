@@ -69,4 +69,10 @@
 		right: 0.6rem;
 		opacity: 0.3;
 	}
+
+	@media all and (max-width: 768px) {
+		.icon {
+			display: none;
+		}
+	}
 </style>

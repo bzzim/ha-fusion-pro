@@ -286,6 +286,7 @@
 	"start_over": "Alusta uuesti",
 	"start_pause": "Käivita/Peata",
 	"state": "Olek",
+	"state_label": "Üksuse olek",
 	"status": "Olek",
 	"stop": "Peatu",
 	"stop_cover": "Peata avakate",

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { dashboard, isVisibleSidebar, lang, motion, ripple } from '$lib/Stores';
+	import { isVisibleSidebar, lang, motion, ripple } from '$lib/Stores';
 	import { cubicOut } from 'svelte/easing';
 	import { fade, slide } from 'svelte/transition';
 	import type { ViewItem } from '$lib/Types';

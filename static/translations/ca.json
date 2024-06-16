@@ -286,6 +286,7 @@
 	"start_over": "Comença de nou",
 	"start_pause": "Inicia/pausa",
 	"state": "Estat",
+	"state_label": "Estat de l'entitat",
 	"status": "Estat",
 	"stop": "Atura",
 	"stop_cover": "Atura la coberta",

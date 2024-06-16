@@ -286,6 +286,7 @@
 	"start_over": "Začít znovu",
 	"start_pause": "Start/Pauza",
 	"state": "Stav",
+	"state_label": "Stav entity",
 	"status": "Stav",
 	"stop": "Zastavit",
 	"stop_cover": "Zastavit",

@@ -195,6 +195,7 @@
 	"start_over": "Nei ufänken",
 	"start_pause": "Start/Pause",
 	"state": "State",
+	"state_label": "Entity state",
 	"status": "Status",
 	"stop": "Stop",
 	"stop_cover": "Stop cover",

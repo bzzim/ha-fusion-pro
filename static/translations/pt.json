@@ -282,6 +282,7 @@
 	"start_over": "Recomeçar",
 	"start_pause": "Iniciar /pausa",
 	"state": "Estado",
+	"state_label": "Estado da entidade",
 	"status": "Estado",
 	"stop": "Parar",
 	"stop_cover": "Parar",

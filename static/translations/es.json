@@ -286,6 +286,7 @@
 	"start_over": "Empezar de nuevo",
 	"start_pause": "Iniciar/Pausar",
 	"state": "Estado",
+	"state_label": "Estado de la entidad",
 	"status": "Estado",
 	"stop": "Detener",
 	"stop_cover": "Detener la persiana",

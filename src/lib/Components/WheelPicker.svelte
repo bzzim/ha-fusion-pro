@@ -4,7 +4,6 @@
 	import Ripple from 'svelte-ripple';
 	import Icon from '@iconify/svelte';
 	import { createEventDispatcher } from 'svelte';
-	import Timer from '$lib/Sidebar/Timer.svelte';
 	const dispatch = createEventDispatcher();
 
 	export let minValue: number = 0;

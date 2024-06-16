@@ -199,6 +199,7 @@
 	"start_over": "Start på nytt",
 	"start_pause": "Start/Sett på pause",
 	"state": "State",
+	"state_label": "Entity state",
 	"status": "Status",
 	"stop": "Stopp",
 	"stop_cover": "Stop cover",

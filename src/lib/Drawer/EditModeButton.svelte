@@ -22,7 +22,7 @@
 
 	let width: number;
 
-	$: text = $lang($editMode ? 'done' : 'edit_ui');
+	$: text = $lang($editMode ? 'done' : 'edit');
 
 	/**
 	 * If changes have been made, prompt the user for

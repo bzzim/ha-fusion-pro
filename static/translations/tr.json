@@ -286,6 +286,7 @@
 	"start_over": "Baştan başla",
 	"start_pause": "Başlat/duraklat",
 	"state": "Durum",
+	"state_label": "Varlık durumu",
 	"status": "Durum",
 	"stop": "Durdur",
 	"stop_cover": "Kepengi durdur",

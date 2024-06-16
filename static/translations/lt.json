@@ -286,6 +286,7 @@
 	"start_over": "Pradėti iš naujo",
 	"start_pause": "Pradėti/Pristabdyti",
 	"state": "Būsena",
+	"state_label": "Subjekto būsena",
 	"status": "Būsena",
 	"stop": "Sustabdyti",
 	"stop_cover": "Stop dangtis",

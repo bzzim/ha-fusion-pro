@@ -286,6 +286,7 @@
 	"start_over": "Ricomincia",
 	"start_pause": "Avvio/Pausa",
 	"state": "Stato",
+	"state_label": "Stato dell'entità",
 	"status": "Stato",
 	"stop": "Ferma",
 	"stop_cover": "Ferma il movimento della serranda",

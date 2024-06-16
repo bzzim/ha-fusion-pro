@@ -284,6 +284,7 @@
 	"start_over": "Begin opnieuw",
 	"start_pause": "Start/Pauze",
 	"state": "Staat",
+	"state_label": "Entiteitsstatus",
 	"status": "Status",
 	"stop": "Stop",
 	"stop_cover": "Stop bedekking",

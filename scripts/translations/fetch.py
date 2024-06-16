@@ -540,6 +540,7 @@ dir_keys = [
             ("conditional", ["ui.panel.lovelace.editor.card.conditional.name"]),
             ("conditions", ["ui.panel.lovelace.editor.card.conditional.conditions"]),
             ("media_player", ["ui.panel.lovelace.editor.card.media-control.name"]),
+            ("state_label", ["ui.panel.lovelace.editor.condition-editor.condition.state.label"]),
         ],
     ),
     (  # DEVELOPER-TOOLS

@@ -286,6 +286,7 @@
 	"start_over": "Újrakezdés",
 	"start_pause": "Indítás/szünet",
 	"state": "Állapot",
+	"state_label": "Entitás állapota",
 	"status": "Állapot",
 	"stop": "Leállítás",
 	"stop_cover": "Leállítás",

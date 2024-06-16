@@ -214,7 +214,7 @@
 				<div
 					id={String(item.id)}
 					animate:flip={{ duration: loaded ? $motion : 0 }}
-					class="sidebar_edit_mode"
+					class:sidebar_edit_mode={$editMode}
 					style:display={item?.type === 'divider' ||
 					item?.type === 'date' ||
 					item?.type === 'camera' ||
@@ -284,6 +284,7 @@
 								this={History.default}
 								entity_id={item?.entity_id || ''}
 								period={item?.period}
+								hideIndicatorValue={item?.hide_indicator_value}
 							/>
 						</button>
 
@@ -409,6 +410,11 @@
 		cursor: inherit;
 		font-size: inherit;
 		width: 100%;
+	}
+
+	.sidebar_edit_mode button:hover,
+	.sidebar_edit_mode div:hover {
+		outline: 2px dashed #ffc107;
 	}
 
 	section {

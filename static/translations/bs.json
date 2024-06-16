@@ -194,6 +194,7 @@
 	"start_over": "Početi iznova",
 	"start_pause": "Start/pauza",
 	"state": "Stanje",
+	"state_label": "Entity state",
 	"status": "Status",
 	"stop": "Zaustavi",
 	"stop_cover": "Stop cover",
