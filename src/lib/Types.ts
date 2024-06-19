@@ -1,5 +1,7 @@
 // configuration.yaml
 
+import { semVerIsHigher } from '$lib/Utils';
+
 export interface Configuration {
 	hassUrl?: string;
 	locale?: string;
@@ -263,4 +265,11 @@ export interface YouTubeEvent {
 	user_code?: string;
 	timestamp?: number;
 	error?: any;
+}
+
+export interface AppVersion {
+	has_update: boolean,
+	installed: string,
+	latest: string,
+	url: string
 }

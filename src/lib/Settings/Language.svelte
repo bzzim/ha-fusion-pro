@@ -2,6 +2,7 @@
 	import { base } from '$app/paths';
 	import { translation, selectedLanguage, lang } from '$lib/Stores';
 	import Select from '$lib/Components/Select.svelte';
+	import Icon from '@iconify/svelte';
 
 	export let languages: {
 		id: string;
@@ -35,12 +36,10 @@
 	const href = 'https://www.home-assistant.io/docs/configuration/basic/#language';
 </script>
 
+<div class="header">
 <h2>{$lang('language')}</h2>
-
-<p class="overflow">
-	{$lang('docs')} -
-	<a {href} target="blank">{href}</a>
-</p>
+<a target="blank" href={href}><Icon icon="uit:question-circle" height="1.2rem"/></a>
+</div>
 
 {#if languages.length !== 0}
 	<Select
@@ -54,17 +53,13 @@
 {/if}
 
 <style>
-	a {
-		color: #fa8f92;
+	.header {
+		display: inline-flex;
+		align-items: baseline;
+		justify-content: center;
 	}
-
-	p {
-		margin-block-end: 0.6rem;
-		font-size: 0.9rem;
-		opacity: 0.75;
-	}
-
-	p:hover {
-		cursor: default;
+	.header a {
+		margin-left: 0.5rem;
+		color: var(--theme-colors-text);
 	}
 </style>

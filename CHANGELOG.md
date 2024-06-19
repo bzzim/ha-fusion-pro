@@ -4,9 +4,14 @@
 
 ## Sync original repo
 
+### Added
+
+- Add settings version check
+
 ### Fixed
 
 - Update youtube addon
+- Settings: help icons instead links
 
 ## [0.0.3] - 2024-06-17
 

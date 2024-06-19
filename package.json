@@ -1,6 +1,12 @@
 {
 	"name": "ha-fusion-pro",
 	"version": "0.0.4",
+	"license": "MIT",
+	"homepage": "https://github.com/bzzim/ha-fusion-pro",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/bzzim/ha-fusion-pro.git"
+	},
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",

@@ -7,7 +7,6 @@
 	import Ripple from 'svelte-ripple';
 	import { callService } from 'home-assistant-js-websocket';
 	import { onDestroy } from 'svelte';
-	import Select from '$lib/Components/Select.svelte';
 	import UniversalSelect from '$lib/Components/UniversalSelect.svelte';
 
 	export let isOpen: boolean;

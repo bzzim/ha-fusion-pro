@@ -2,6 +2,7 @@
 	import { lang, youtubeAddon } from '$lib/Stores';
 	import { openModal } from 'svelte-modals';
 	import Toggle from '$lib/Components/Toggle.svelte';
+	import Icon from '@iconify/svelte';
 
 	export let data: any;
 
@@ -13,12 +14,10 @@
 	const href = 'https://github.com/bzzim/ha-fusion-pro/blob/main/static/documentation/Map.md';
 </script>
 
-<h2>{$lang('addons')}</h2>
-
-<p class="overflow">
-	{$lang('docs')} -
-	<a {href} target="blank">{href}</a>
-</p>
+<div class="header">
+	<h2>{$lang('addons')}</h2>
+	<a target="blank" href={href}><Icon icon="uit:question-circle" height="1.2rem"/></a>
+</div>
 
 <div class="grid">
 	<div class="item">
@@ -108,17 +107,13 @@
 		pointer-events: none;
 	}
 
-	p {
-		margin-block-end: 0.6rem;
-		font-size: 0.9rem;
-		opacity: 0.75;
+	.header {
+		display: inline-flex;
+		align-items: baseline;
+		justify-content: center;
 	}
-
-	p:hover {
-		cursor: default;
-	}
-
-	a {
-		color: #fa8f92;
+	.header a {
+		margin-left: 0.5rem;
+		color: var(--theme-colors-text);
 	}
 </style>

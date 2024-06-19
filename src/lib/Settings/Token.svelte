@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { configuration, lang } from '$lib/Stores';
+	import Icon from '@iconify/svelte';
 
 	let token = $configuration?.token;
 
@@ -11,12 +12,10 @@
 	const href = 'https://www.home-assistant.io/docs/authentication/#your-account-profile';
 </script>
 
-<h2>{$lang('token')}</h2>
-
-<p class="overflow">
-	{$lang('docs')} -
-	<a {href} target="blank">{href}</a>
-</p>
+<div class="header">
+	<h2>{$lang('token')}</h2>
+	<a target="blank" href={href}><Icon icon="uit:question-circle" height="1.2rem"/></a>
+</div>
 
 <input
 	class="input"
@@ -29,17 +28,13 @@
 />
 
 <style>
-	a {
-		color: #fa8f92;
+	.header {
+		display: inline-flex;
+		align-items: baseline;
+		justify-content: center;
 	}
-
-	p {
-		margin-block-end: 0.6rem;
-		font-size: 0.9rem;
-		opacity: 0.75;
-	}
-
-	p:hover {
-		cursor: default;
+	.header a {
+		margin-left: 0.5rem;
+		color: var(--theme-colors-text);
 	}
 </style>

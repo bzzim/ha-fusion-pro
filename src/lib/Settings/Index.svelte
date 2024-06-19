@@ -5,6 +5,7 @@
 	import { modals, closeModal } from 'svelte-modals';
 	import Modal from '$lib/Modal/Index.svelte';
 	import Language from '$lib/Settings/Language.svelte';
+	import Version from '$lib/Settings/Version.svelte';
 	import Addons from '$lib/Settings/Addons.svelte';
 	import Motion from '$lib/Settings/Motion.svelte';
 	import Token from '$lib/Settings/Token.svelte';
@@ -121,6 +122,8 @@
 			<Language {languages} />
 
 			<Token />
+
+			<Version />
 
 			<Addons {data} />
 

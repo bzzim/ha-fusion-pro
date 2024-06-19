@@ -203,3 +203,48 @@ export function getSupport(
 		return supports;
 	}, {});
 }
+
+/**
+ * Compare two versions and return true if v1 is higher than v1
+ */
+export function versionCompare(v1: string, v2: string) {
+	let v1parts:any[] = (v1 || "0").split('.')
+	let v2parts:any[] = (v2 || "0").split('.');
+
+	function isValidPart(x: string) {
+		return (/^\d+[A-Za-zαß]?$/).test(x);
+	}
+
+	if (!v1parts.every(isValidPart) || !v2parts.every(isValidPart)) {
+		return NaN;
+	}
+
+	while (v1parts.length < v2parts.length) v1parts.push("0");
+	while (v2parts.length < v1parts.length) v2parts.push("0");
+
+	v1parts = v1parts.map(function(x){
+		const match = (/[A-Za-zαß]/).exec(x);
+		return Number(match ? x.replace(match[0], "." + x.charCodeAt(match.index)):x);
+	});
+	v2parts = v2parts.map(function(x){
+		const match = (/[A-Za-zαß]/).exec(x);
+		return Number(match ? x.replace(match[0], "." + x.charCodeAt(match.index)):x);
+	});
+
+	for (let i = 0; i < v1parts.length; ++i) {
+		if (v2parts.length == i) {
+			return true;
+		}
+
+		if (v1parts[i] == v2parts[i]) {
+			continue;
+		}
+		return v1parts[i] > v2parts[i];
+	}
+
+	if (v1parts.length != v2parts.length) {
+		return false;
+	}
+
+	return false;
+}
