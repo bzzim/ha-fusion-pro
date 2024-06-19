@@ -1,5 +1,13 @@
 # Changelog FUSION pro
 
+## [0.0.4] - 2024-06-19
+
+## Sync original repo
+
+### Fixed
+
+- Update youtube addon
+
 ## [0.0.3] - 2024-06-17
 
 ### Added

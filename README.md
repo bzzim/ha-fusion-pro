@@ -1,4 +1,4 @@
-# ha-fusion
+# ha-fusion-pro
 
 A modern, easy-to-use and performant custom [Home Assistant](https://www.home-assistant.io/) dashboard
 
@@ -12,7 +12,7 @@ Based on project ❤️ <https://github.com/matt8707/ha-fusion>, but my approach
 
 ## 📣 Alpha
 
-The current state of this project is **pre-beta**. This means that there's basic functionality missing, incomplete features and unresolved issues. General feedback, bug reports and feature requests are welcome!
+The current state of this project is **alpha**. This means that there's basic functionality missing, incomplete features and unresolved issues. General feedback, bug reports and feature requests are welcome!
 
 ---
 
