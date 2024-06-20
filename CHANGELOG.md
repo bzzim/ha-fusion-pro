@@ -1,6 +1,6 @@
 # Changelog FUSION pro
 
-## [0.0.4] - 2024-06-19
+## [0.0.4] - 2024-06-21
 
 ## Sync original repo
 
@@ -12,6 +12,7 @@
 
 - Update youtube addon
 - Settings: help icons instead links
+- Update markdown
 
 ## [0.0.3] - 2024-06-17
 
