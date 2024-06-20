@@ -466,6 +466,7 @@ dir_keys = [
             ("check_updates", ["ui.panel.config.updates.check_updates"]),
             ("checking_updates", ["ui.panel.config.updates.checking_updates"]),
             ("version_fmt", ["ui.panel.config.zwave_js.device_info.zwave_plus_version"]),
+            ("scenes", ["ui.panel.config.devices.scene.scenes"]),
         ],
     ),
     (  # ONBOARDING

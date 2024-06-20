@@ -6,7 +6,8 @@
 
 ### Added
 
-- Add settings version check
+- Settings version check
+- Scenes section type
 
 ### Fixed
 
