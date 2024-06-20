@@ -37,8 +37,8 @@
 </script>
 
 <div class="header">
-<h2>{$lang('language')}</h2>
-<a target="blank" href={href}><Icon icon="uit:question-circle" height="1.2rem"/></a>
+	<h2>{$lang('language')}</h2>
+	<a target="blank" {href}><Icon icon="uit:question-circle" height="1.2rem" /></a>
 </div>
 
 {#if languages.length !== 0}

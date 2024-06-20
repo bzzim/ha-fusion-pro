@@ -18,10 +18,10 @@ export const GET: RequestHandler = async () => {
 
 async function loadVersions(): Promise<[string, string, string]> {
 	const packageFile = await readFile('./package.json', 'utf8').catch((err) => {
-			console.log('readFile', err.message);
-			return Promise.reject(false);
+		console.log('readFile', err.message);
+		return Promise.reject(false);
 	});
-	const packageData = JSON.parse(packageFile)
+	const packageData = JSON.parse(packageFile);
 
 	const url = getGithubApiUrl(packageData.repository.url);
 	const response = await fetch(url, {
@@ -40,6 +40,6 @@ async function loadVersions(): Promise<[string, string, string]> {
 }
 
 function getGithubApiUrl(urlString: string): string {
-	const path = new URL(urlString).pathname.replace('.git', '')
-	return `https://api.github.com/repos${path}/releases/latest`
+	const path = new URL(urlString).pathname.replace('.git', '');
+	return `https://api.github.com/repos${path}/releases/latest`;
 }

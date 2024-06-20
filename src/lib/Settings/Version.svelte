@@ -6,30 +6,30 @@
 	import type { AppVersion } from '$lib/Types';
 	let hasError: boolean;
 	let isLoading = false;
-	let data: AppVersion
+	let data: AppVersion;
 	onMount(async () => {
-		await fetchData()
+		await fetchData();
 	});
 
 	async function fetchData() {
-		isLoading = true
-		hasError = false
-		await fetch(`${base}/_api/version`, {headers: { 'Content-Type': 'application/json' }})
-			.then<AppVersion>(response => {
+		isLoading = true;
+		hasError = false;
+		await fetch(`${base}/_api/version`, { headers: { 'Content-Type': 'application/json' } })
+			.then<AppVersion>((response) => {
 				if (!response.ok) {
-					hasError = true
+					hasError = true;
 				}
-				return response.json()
+				return response.json();
 			})
-			.then((json) => data = json)
-			.catch(() => hasError = true)
-			.finally(() => isLoading = false);
+			.then((json) => (data = json))
+			.catch(() => (hasError = true))
+			.finally(() => (isLoading = false));
 	}
 </script>
 
 <div class="container">
 	<div>
-		<h2>{$lang('version_fmt').replace('{version}',data?.installed ?? '')}</h2>
+		<h2>{$lang('version_fmt').replace('{version}', data?.installed ?? '')}</h2>
 		<p>
 			{#if data && !hasError}
 				{#if data.has_update}
@@ -37,14 +37,15 @@
 				{:else}
 					{$lang('update_up_to_date')}
 				{/if}
-				<br/>
-				<a href="{data.url}" target="_blank">
-					{$lang('update_release_notes')} {data.installed}
+				<br />
+				<a href={data.url} target="_blank">
+					{$lang('update_release_notes')}
+					{data.installed}
 				</a>
 			{:else if isLoading}
 				{$lang('loading')}
 			{/if}
-			{#if hasError }
+			{#if hasError}
 				{$lang('error')}
 			{/if}
 		</p>
@@ -54,7 +55,7 @@
 		class="action done"
 		disabled={isLoading}
 		on:click|preventDefault={() => {
-			fetchData()
+			fetchData();
 		}}
 		use:Ripple={{
 			...$ripple,

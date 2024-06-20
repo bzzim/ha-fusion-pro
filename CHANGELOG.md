@@ -13,6 +13,7 @@
 - Update youtube addon
 - Settings: help icons instead links
 - Update markdown
+- Playing conditional media
 
 ## [0.0.3] - 2024-06-17
 

@@ -14,7 +14,7 @@
 
 <div class="header">
 	<h2>{$lang('token')}</h2>
-	<a target="blank" href={href}><Icon icon="uit:question-circle" height="1.2rem"/></a>
+	<a target="blank" {href}><Icon icon="uit:question-circle" height="1.2rem" /></a>
 </div>
 
 <input

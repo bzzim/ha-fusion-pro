@@ -268,8 +268,8 @@ export interface YouTubeEvent {
 }
 
 export interface AppVersion {
-	has_update: boolean,
-	installed: string,
-	latest: string,
-	url: string
+	has_update: boolean;
+	installed: string;
+	latest: string;
+	url: string;
 }
