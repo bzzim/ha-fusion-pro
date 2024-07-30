@@ -158,7 +158,7 @@
 				</div>
 
 				<button class="action done" on:click|preventDefault={closeModal} use:Ripple={$ripple}>
-					{$lang('done')}
+					{$lang('close')}
 				</button>
 			</div>
 		</form>
@@ -167,11 +167,16 @@
 
 <style>
 	.buttons {
-		border-top: 1px solid rgba(255, 255, 255, 0.1);
 		margin-top: 0.9rem;
-		padding-top: 1.5rem;
 		display: flex;
 		justify-content: space-between;
+		position: sticky;
+		bottom: 0;
+		background-color: var(--theme-modal-background-color-modal);
+		padding: 1rem;
+		border-radius: 1rem;
+		margin-left: -1rem;
+		margin-right: -1rem;
 	}
 
 	.save {

@@ -1,5 +1,16 @@
 # Changelog FUSION pro
 
+## [0.0.5] - 2024-07-30
+
+### Added
+
+- Settings: sticky action bar
+
+### Fixed
+
+- Update deps
+- Cloudflare polyfill
+
 ## [0.0.4] - 2024-06-21
 
 ## Sync original repo

@@ -1,7 +1,5 @@
 // configuration.yaml
 
-import { semVerIsHigher } from '$lib/Utils';
-
 export interface Configuration {
 	hassUrl?: string;
 	locale?: string;

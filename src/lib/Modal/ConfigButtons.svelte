@@ -97,7 +97,7 @@
 			{#if sel?.type || sel?.sections}
 				{#if sel?.type || sel?.sections}
 					<button class="done action" on:click={closeModal} use:Ripple={$ripple}>
-						{$lang('done')}
+						{$lang('close')}
 					</button>
 				{/if}
 				{#if !disableChangeType === true}
@@ -134,6 +134,8 @@
 		display: flex;
 		justify-content: space-between;
 		margin-top: 2.37rem;
+		margin-left: -1rem;
+		margin-right: -1rem;
 		position: sticky;
 		bottom: 0;
 		background-color: var(--theme-modal-background-color-modal);

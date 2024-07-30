@@ -150,7 +150,7 @@
 	}
 
 	.contents {
-		padding: 1.6rem 1.9rem 1.9rem 1.9rem;
+		padding: 1.6rem 1.9rem 1rem 1.9rem;
 		background-color: var(--theme-modal-background-color-modal);
 		display: block;
 		flex-direction: column;
