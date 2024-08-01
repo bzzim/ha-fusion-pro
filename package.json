@@ -44,7 +44,7 @@
 		"svelte-fast-dimension": "^1.1.0",
 		"tslib": "^2.6.3",
 		"typescript": "^5.5.4",
-		"typescript-eslint": "8.0.0-alpha.39",
+		"typescript-eslint": "8.0.0",
 		"vite": "^5.3.5"
 	},
 	"type": "module",
